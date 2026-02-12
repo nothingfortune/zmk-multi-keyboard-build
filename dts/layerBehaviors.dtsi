@@ -12,7 +12,7 @@ numpad_td: numpad_td {
     compatible = "zmk,behavior-tap-dance";
     #binding-cells = <0>;
     tapping-term-ms = <200>;
-    bindings = <&mo LAYER_Num>, <&to LAYER_Num>;
+    bindings = <&mo LAYER_Keypad>, <&to LAYER_Keypad>;
 };
 
 /* Tap = number, Hold = shifted symbol (e.g. 1/!, 2/@, 3/#) */

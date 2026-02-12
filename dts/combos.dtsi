@@ -6,13 +6,6 @@
 /* Combos trigger an action when multiple specific keys are pressed simultaneously or within a short timeframe  */
 /* Combos detect a chord and execute a single binding in response  */
 
-// toggle gaming layer - TailorKey
-combo_gaming_layer_TKZ {
-    timeout-ms = <50>;
-    key-positions = <POS_LH_C1R4 POS_LH_C2R5>;
-    bindings = <&tog LAYER_Gaming>;
-};
-
 // F1 combo for Go60 - TailorKey
 combo_F1_cb_TKZ {
     key-positions = <POS_LH_C5R1 POS_LH_C5R2>;

@@ -28,7 +28,7 @@ This guide explains how to create and use a shared ZMK behaviors library across 
     manifest:
       projects:
         - name: zmk-behaviors-lib
-          url: https://github.com/YOURNAME/zmk-behaviors-lib
+          url: https://github.com/nothingfortune/zmk-behaviors-lib
           revision: main
     ```
 2. Run:
