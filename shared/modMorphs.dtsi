@@ -33,3 +33,24 @@ dqt_pair: double_quote_pair {
     bindings = <&kp SQT>, <&pair_dquote>;
     mods = <(MOD_LSFT|MOD_RSFT|MOD_LCTL|MOD_RCTL|MOD_LALT|MOD_RALT|MOD_LGUI|MOD_RGUI)>;
 };
+
+numpad_td: numpad_td {
+    compatible = "zmk,behavior-tap-dance";
+    #binding-cells = <0>;
+    tapping-term-ms = <200>;
+    bindings = <&mo LAYER_Keypad>, <&to LAYER_Keypad>;
+};
+
+/* Tap = number, Hold = shifted symbol (e.g. 1/!, 2/@, 3/#) */
+num_ht: num_hold_tap {
+    compatible = "zmk,behavior-hold-tap";
+    #binding-cells = <2>;
+    flavor = "balanced";
+    tapping-term-ms = <NUM_HT_TAPPING_TERM>;
+    quick-tap-ms = <NUM_HT_QUICK_TAP>;
+    require-prior-idle-ms = <NUM_HT_PRIOR_IDLE>;
+    bindings = <&kp>, <&kp>;
+};
+
+// Layer tap dance behaviors
+ZMK_TD_LAYER(td_LAYER_Keypad, 12)

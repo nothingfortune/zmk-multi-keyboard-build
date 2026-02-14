@@ -1,0 +1,47 @@
+/* ------------------------------------------------------------------ */
+/*                          Auto-Shifts                               */
+/* ------------------------------------------------------------------ */
+
+// AutoShift Helper- &AS main macro is chained to &AS_HT hold tap and &AS_Shifted macro - TailorKey
+AS_Shifted_v1_TKZ: AS_Shifted_v1_TKZ {
+    label = "&AS_SHIFTED_V1_TKZ";
+    compatible = "zmk,behavior-macro-one-param";
+    #binding-cells = <1>;
+    tap-ms = <0>;
+    wait-ms = <0>;
+    bindings = <&macro_press>
+    , <&kp LSHFT>
+    , <&macro_tap>
+    , <&macro_param_1to1>
+    , <&kp MACRO_PLACEHOLDER>
+    , <&macro_release>
+    , <&kp LSHFT>;
+};
+
+// AutoShift (Assign &AS to a Key) - &AS main macro is chained to &AS_HT hold tap and &AS_Shifted macro - TailorKey
+AS_v1_TKZ: AS_v1_TKZ {
+    label = "&AS_V1_TKZ";
+    compatible = "zmk,behavior-macro-one-param";
+    #binding-cells = <1>;
+    tap-ms = <0>;
+    wait-ms = <0>;
+    bindings = <&macro_press>
+    , <&macro_param_1to1>
+    , <&macro_param_1to2>
+    , <&AS_HT_v2_TKZ MACRO_PLACEHOLDER MACRO_PLACEHOLDER>
+    , <&macro_pause_for_release>
+    , <&macro_release>
+    , <&macro_param_1to1>
+    , <&macro_param_1to2>
+    , <&AS_HT_v2_TKZ MACRO_PLACEHOLDER MACRO_PLACEHOLDER>;
+};
+
+// AutoShift Helper - &AS main macro is chained to &AS_HT hold tap and &AS_Shifted macro. For faster typists, it is recommended to decrease the tapping-term-ms value. A suggested value is 135 ms.
+// More: https://github.com/nickcoutsos/keymap-editor/wiki/Autoshift-using-ZMK-behaviors
+AS_HT_v2_TKZ: AS_HT_v2_TKZ {
+    compatible = "zmk,behavior-hold-tap";
+    #binding-cells = <2>;
+    tapping-term-ms = <AUTOSHIFT_TAPPING_TERM>;
+    bindings = <&AS_Shifted_v1_TKZ>, <&kp>;
+    flavor = "tap-preferred";
+};

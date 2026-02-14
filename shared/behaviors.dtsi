@@ -1,0 +1,84 @@
+// thumb_LAYER_access - TailorKey
+lt_v2_TKZ: lt_v2_TKZ {
+    compatible = "zmk,behavior-hold-tap";
+    #binding-cells = <2>;
+    tapping-term-ms = <THUMB_TAPPING_TERM>;
+    bindings = <&mo>, <&kp>;
+    flavor = "balanced";
+    quick-tap-ms = <THUMB_QUICK_TAP>;
+};
+
+/* Caps Word: Capitalizes alphanumeric keys until a stop key is pressed */
+cw: caps_word {
+    compatible = "zmk,behavior-caps-word";
+    #binding-cells = <0>;
+    continue-list = <UNDERSCORE MINUS BACKSPACE DELETE N1 N2 N3 N4 N5 N6 N7 N8 N9 N0>;
+};
+
+/* Up and Down arrows - outputs up/down normally, swap them when any modifier is held */
+upDownArrows: up_down_arrows {
+    compatible = "zmk,behavior-mod-morph";
+    #binding-cells = <0>;
+    bindings = <&kp DOWN>, <&kp UP>;
+    mods = <(MOD_LSFT|MOD_LCTL|MOD_RCTL|MOD_LALT|MOD_RALT|MOD_LGUI|MOD_RGUI)>;
+};
+
+/* Hold backspace = delete word (Option+Backspace on macOS) */
+bspc_word: backspace_word {
+    compatible = "zmk,behavior-hold-tap";
+    #binding-cells = <2>;
+    flavor = "balanced";
+    tapping-term-ms = <BSPC_WORD_TAPPING_TERM>;
+    quick-tap-ms = <BSPC_WORD_QUICK_TAP>;
+    require-prior-idle-ms = <BSPC_WORD_PRIOR_IDLE>;
+    bindings = <&kp>, <&kp>;
+};
+
+/* Arrow keys with word jump on hold */
+arrow_left: arrow_word_left {
+    compatible = "zmk,behavior-hold-tap";
+    #binding-cells = <2>;
+    flavor = "balanced";
+    tapping-term-ms = <ARROW_TAPPING_TERM>;
+    quick-tap-ms = <ARROW_QUICK_TAP>;
+    require-prior-idle-ms = <ARROW_PRIOR_IDLE>;
+    bindings = <&kp>, <&kp>;
+};
+
+arrow_right: arrow_word_right {
+    compatible = "zmk,behavior-hold-tap";
+    #binding-cells = <2>;
+    flavor = "balanced";
+    tapping-term-ms = <ARROW_TAPPING_TERM>;
+    quick-tap-ms = <ARROW_QUICK_TAP>;
+    require-prior-idle-ms = <ARROW_PRIOR_IDLE>;
+    bindings = <&kp>, <&kp>;
+};
+
+/* Tab with Hyper key on double-tap */
+tab_hyper: tab_hyper {
+    compatible = "zmk,behavior-tap-dance";
+    #binding-cells = <0>;
+    tapping-term-ms = <200>;
+    bindings = <&kp TAB>, <&hyper_key>;
+};
+
+// thumb_layer_access - TailorKey
+thumb_v2_TKZ: thumb_v2_TKZ {
+    compatible = "zmk,behavior-hold-tap";
+    #binding-cells = <2>;
+    tapping-term-ms = <THUMB_TAPPING_TERM>;
+    bindings = <&mo>, <&kp>;
+    flavor = "balanced";
+    quick-tap-ms = <THUMB_QUICK_TAP>;
+};
+
+// space_layer_access - TailorKey
+space_v3_TKZ: space_v3_TKZ {
+    compatible = "zmk,behavior-hold-tap";
+    #binding-cells = <2>;
+    tapping-term-ms = <SPACE_TAPPING_TERM>;
+    bindings = <&mo>, <&kp>;
+    flavor = "balanced";
+    quick-tap-ms = <SPACE_QUICK_TAP>;
+};
