@@ -398,36 +398,36 @@ After the refactor, a board keymap becomes a thin assembly file:
 
 ### Fully Shareable (update once, all boards get it)
 
-| Component | Why it's portable |
-|-----------|-------------------|
-| All macros | Pure key sequences, no position refs |
-| HRM hold/tap macros | Reference letters (A,S,D,F,J,K,L,;) not positions |
-| HRM timing defines | Just numbers |
-| Mod-morphs | Pure modifier logic |
-| Autoshift chain | Pure behavior logic |
-| Caps word | Pure behavior config |
-| Layer number defines | Shared convention |
-| Bluetooth macros | Universal |
-| Non-positional behaviors | `num_ht`, `bspc_word`, `thumb_v2`, `arrow_*`, `tab_hyper` |
+| Component                     | Why it's portable                                           |
+|-------------------------------|-------------------------------------------------------------|
+| All macros                    | Pure key sequences, no position refs                        |
+| HRM hold/tap macros           | Reference letters (A,S,D,F,J,K,L,;) not positions           |
+| HRM timing defines            | Just numbers                                                |
+| Mod-morphs                    | Pure modifier logic                                         |
+| Autoshift chain               | Pure behavior logic                                         |
+| Caps word                     | Pure behavior config                                        |
+| Layer number defines          | Shared convention                                           |
+| Bluetooth macros              | Universal                                                   |
+| Non-positional behaviors      | `num_ht`, `bspc_word`, `thumb_v2`, `arrow_*`, `tab_hyper`   |
 
 ### Shareable with Position Indirection (update once, resolves per-board)
 
-| Component | What varies |
-|-----------|-------------|
-| HRM bilateral behaviors | `hold-trigger-key-positions` → resolved via `HRM_*_TRIGGER_POSITIONS` |
-| F-key combos | `key-positions` → same logical names, different physical numbers |
-| Tab-switcher combo | `key-positions` |
+| Component                     | What varies                                                            |
+|-------------------------------|------------------------------------------------------------------------|
+| HRM bilateral behaviors       | `hold-trigger-key-positions` → resolved via `HRM_*_TRIGGER_POSITIONS`  |
+| F-key combos                  | `key-positions` → same logical names, different physical numbers       |
+| Tab-switcher combo            | `key-positions`                                                        |
 
 ### Board-Specific (must maintain per-board)
 
-| Component | Why it's unique |
-|-----------|----------------|
-| `positions.dtsi` | Physical key matrix numbers differ |
-| `position_groups.dtsi` | Different key counts per hand |
-| Layer bindings (the grids) | Different number of keys per row |
-| Input processor config | Trackpad hardware differs (or absent) |
-| Extra-key bindings | Glove80 has 20 keys Go60 doesn't |
-| Board meta | `KB_TYPE`, shield config |
+| Component                     | Why it's unique                                 |
+|-------------------------------|-------------------------------------------------|
+| `positions.dtsi`              | Physical key matrix numbers differ              |
+| `position_groups.dtsi`        | Different key counts per hand                   |
+| Layer bindings (the grids)    | Different number of keys per row                |
+| Input processor config        | Trackpad hardware differs (or absent)           |
+| Extra-key bindings            | Glove80 has 20 keys Go60 doesn't                |
+| Board meta                    | `KB_TYPE`, shield config                        |
 
 ---
 
