@@ -512,15 +512,15 @@ Add a comment convention at the top of each layer file marking which shared beha
 
 ### Phase 1: Extract and Centralize (don't change any functionality)
 
-1. Create the repo structure
-2. Extract all macros from `go60.keymap` → `shared/macros.dtsi`
-3. Extract all non-positional behaviors → `shared/behaviors.dtsi`
-4. Extract mod-morphs → `shared/modMorphs.dtsi`
-5. Extract HRM macros → `shared/homeRowMods/hrm_macros.dtsi`
-6. Extract timing defines → `shared/homeRowMods/hrm_timings.dtsi`
-7. Replace hardcoded timings in HRM behaviors with timing defines
-8. Extract HRM behaviors → `shared/homeRowMods/hrm_behaviors.dtsi`
-9. Move `positions.dtsi` and `position_groups.dtsi` to `boards/go60/`
+1. (done) Create the repo structure
+2. (done) Extract all macros from `go60.keymap` → `shared/macros.dtsi`
+3. (done) Extract all non-positional behaviors → `shared/behaviors.dtsi`
+4. (done) Extract mod-morphs → `shared/modMorphs.dtsi`
+5. (done) Extract HRM macros → `shared/homeRowMods/hrm_macros.dtsi`
+6. (done) Extract timing defines → `shared/homeRowMods/hrm_timings.dtsi`
+7. (done) Replace hardcoded timings in HRM behaviors with timing defines
+8. (done) Extract HRM behaviors → `shared/homeRowMods/hrm_behaviors.dtsi`
+9. (done) Move `positions.dtsi` and `position_groups.dtsi` to `boards/go60/`
 10. Verify the Go60 keymap compiles and works identically
 
 ### Phase 2: Add Glove80
