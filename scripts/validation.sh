@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# validation.sh — Validate the zmk-custom-functions-lib repo structure
+# validation.sh — Validate the zmk-multi-keyboard-build repo structure
 #
 # Usage: ./scripts/validation.sh
 # Exit code: 0 = all pass, 1 = one or more failures

@@ -1,4 +1,4 @@
-# zmk-custom-functions-lib
+# zmk-multi-keyboard-build
 
 Shared ZMK firmware configuration for three keyboards, built automatically on every commit to `main`.
 
@@ -19,7 +19,7 @@ Shared ZMK firmware configuration for three keyboards, built automatically on ev
 ### Repository layout
 
 ```
-zmk-custom-functions-lib/
+zmk-multi-keyboard-build/
 │
 ├── shared/                         # Cross-keyboard behaviors (included by all boards)
 │   ├── layers.dtsi                 # LAYER_* index constants (0-18)

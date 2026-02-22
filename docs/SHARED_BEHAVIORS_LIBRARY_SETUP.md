@@ -43,13 +43,13 @@ This guide explains how to create and use a shared ZMK behaviors library across 
 
 At the top of your keymap file, include the custom behavior files you need. For example:
 ```dts
-#include <zmk-custom-functions-lib/dts/behaviors.dtsi>
-#include <zmk-custom-functions-lib/dts/combos.dtsi>
-#include <zmk-custom-functions-lib/dts/holdTaps.dtsi>
-#include <zmk-custom-functions-lib/dts/homeRowMods.dtsi>
-#include <zmk-custom-functions-lib/dts/layerBehaviors.dtsi>
-#include <zmk-custom-functions-lib/dts/macros.dtsi>
-#include <zmk-custom-functions-lib/dts/modMorphs.dtsi>
+#include <zmk-multi-keyboard-build/dts/behaviors.dtsi>
+#include <zmk-multi-keyboard-build/dts/combos.dtsi>
+#include <zmk-multi-keyboard-build/dts/holdTaps.dtsi>
+#include <zmk-multi-keyboard-build/dts/homeRowMods.dtsi>
+#include <zmk-multi-keyboard-build/dts/layerBehaviors.dtsi>
+#include <zmk-multi-keyboard-build/dts/macros.dtsi>
+#include <zmk-multi-keyboard-build/dts/modMorphs.dtsi>
 ```
 
 > **Tip:** Only include the .dtsi files for the behaviors you actually use in your keymap.
@@ -108,7 +108,7 @@ Replace `MOD_LCTL` and `KC_A` with the desired modifier and keycode for your lay
   west.yml
   ...
   modules/
-    zmk-custom-functions-lib/
+    zmk-multi-keyboard-build/
       dts/homeRowMods.dtsi
       dts/macros.dtsi
       dts/hold-taps.dtsi

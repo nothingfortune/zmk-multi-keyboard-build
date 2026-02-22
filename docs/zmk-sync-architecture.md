@@ -545,7 +545,7 @@ Same process. By now the shared library is proven.
 
 ## Potential Gotchas
 
-**ZMK module include paths.** Your shared library will need to be a ZMK module (like your current `zmk-custom-functions-lib`) so it gets pulled in at build time. The include path will be something like `<zmk-keymap-central/shared/macros.dtsi>`. Make sure `west.yml` or `build.yaml` references it.
+**ZMK module include paths.** Your shared library will need to be a ZMK module (like your current `zmk-multi-keyboard-build`) so it gets pulled in at build time. The include path will be something like `<zmk-keymap-central/shared/macros.dtsi>`. Make sure `west.yml` or `build.yaml` references it.
 
 **Layer order matters.** All boards must define layers in the same order with the same numbers. Your `shared/layers.dtsi` defines this centrally — any board that doesn't use a layer (e.g., SliceMK might not have mouse layers if it has no trackpad) should still define it as a transparent pass-through to keep numbering consistent.
 
