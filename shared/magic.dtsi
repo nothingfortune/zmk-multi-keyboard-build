@@ -1,3 +1,11 @@
+/* RGB status macro — used by the magic hold-tap below */
+rgb_ug_status_macro: rgb_ug_status_macro {
+    label = "RGB_UG_STATUS";
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    bindings = <&rgb_ug RGB_STATUS>;
+};
+
 magic: magic {
     compatible = "zmk,behavior-hold-tap";
     label = "MAGIC_HOLD_TAP";
