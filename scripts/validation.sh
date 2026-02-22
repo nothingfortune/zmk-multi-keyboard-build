@@ -119,6 +119,22 @@ for board in go60 glove80 slicemk; do
   fi
 done
 
+# Layer files actually included in each board's keymap
+# SliceMK excludes magic (RGB_STATUS unsupported) → 18; others → 19
+for board in go60 glove80 slicemk; do
+  case "$board" in
+    go60)    keymap="$REPO_ROOT/boards/go60/go60.keymap";       expected_layers=19 ;;
+    glove80) keymap="$REPO_ROOT/boards/glove80/glove80.keymap"; expected_layers=19 ;;
+    slicemk) keymap="$REPO_ROOT/boards/slicemk/slicemk.keymap"; expected_layers=18 ;;
+  esac
+  actual=$(grep -c '"layers/' "$keymap" 2>/dev/null || echo 0)
+  if [[ "$actual" -eq "$expected_layers" ]]; then
+    pass "boards/$board keymap — $actual layer includes in keymap (expected $expected_layers)"
+  else
+    fail "boards/$board keymap — $actual layer includes in keymap, expected $expected_layers"
+  fi
+done
+
 # ══════════════════════════════════════════════════════════════
 section "3. Position counts"
 # ══════════════════════════════════════════════════════════════
@@ -217,14 +233,29 @@ for board in go60 glove80 slicemk; do
   esac
   missing_inc=()
   for inc in "${REQUIRED_INCLUDES[@]}"; do
+    # magic is intentionally excluded from SliceMK (RGB_STATUS unsupported in slicemk/zmk fork)
+    [[ "$board" == "slicemk" && "$inc" == *"magic.dtsi"* ]] && continue
     grep -qF "#include \"$inc\"" "$keymap" 2>/dev/null || missing_inc+=("$(basename "$inc")")
   done
+  expected_count=$([[ "$board" == "slicemk" ]] && echo 9 || echo 10)
   if [[ ${#missing_inc[@]} -eq 0 ]]; then
-    pass "boards/$board keymap — all 10 shared includes present"
+    pass "boards/$board keymap — all $expected_count shared includes present"
   else
     fail "boards/$board keymap — missing includes: ${missing_inc[*]}"
   fi
 done
+
+# SliceMK-specific exclusions — these must NOT appear (incompatible with slicemk/zmk fork)
+slicemk_km="$REPO_ROOT/boards/slicemk/slicemk.keymap"
+grep -qF 'zmk/rgb.h' "$slicemk_km" 2>/dev/null \
+  && fail "boards/slicemk keymap — rgb.h must NOT be included (RGB_STATUS unsupported in slicemk/zmk fork)" \
+  || pass "boards/slicemk keymap — rgb.h correctly excluded"
+grep -qF 'shared/magic.dtsi' "$slicemk_km" 2>/dev/null \
+  && fail "boards/slicemk keymap — shared/magic.dtsi must NOT be included (RGB_STATUS unsupported in slicemk/zmk fork)" \
+  || pass "boards/slicemk keymap — shared/magic.dtsi correctly excluded"
+grep -qF 'layers/magic.dtsi' "$slicemk_km" 2>/dev/null \
+  && fail "boards/slicemk keymap — layers/magic.dtsi must NOT be included in keymap" \
+  || pass "boards/slicemk keymap — layers/magic.dtsi correctly excluded from keymap"
 
 # ══════════════════════════════════════════════════════════════
 section "7. Position group defines"
@@ -483,6 +514,19 @@ for label in pair_paren pair_angle pair_dquote pair_bracket pair_brace; do
     fail "shared/macros.dtsi — $label MISSING (referenced by modMorphs.dtsi)"
   fi
 done
+
+# rgb_ug_status_macro must live in shared/magic.dtsi (not macros.dtsi) so that
+# boards which exclude magic.dtsi (SliceMK) don't pull in the RGB_STATUS reference.
+if grep -q 'rgb_ug_status_macro' "$macros_file" 2>/dev/null; then
+  fail "shared/macros.dtsi — rgb_ug_status_macro must NOT be here (must stay in shared/magic.dtsi so SliceMK can exclude it)"
+else
+  pass "shared/macros.dtsi — rgb_ug_status_macro correctly absent"
+fi
+if grep -q 'rgb_ug_status_macro' "$REPO_ROOT/shared/magic.dtsi" 2>/dev/null; then
+  pass "shared/magic.dtsi — rgb_ug_status_macro defined here (correct location)"
+else
+  fail "shared/magic.dtsi — rgb_ug_status_macro MISSING (must be defined here, not in macros.dtsi)"
+fi
 
 # ══════════════════════════════════════════════════════════════
 section "17. pointing.h and mkp_drag_lock in all boards"
