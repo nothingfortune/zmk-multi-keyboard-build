@@ -1,3 +1,41 @@
+/* ------------------------------------------------------------------ */
+/*                        Auto-pair macros                            */
+/*              Types a pair of characters, cursor in between         */
+/* ------------------------------------------------------------------ */
+
+pair_paren: pair_parentheses {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    tap-ms = <0>;
+    wait-ms = <0>;
+    bindings = <&macro_tap>
+        , <&kp LPAR>
+        , <&kp RPAR>
+        , <&kp LEFT>;
+};
+
+pair_angle: pair_angle_brackets {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    tap-ms = <0>;
+    wait-ms = <0>;
+    bindings = <&macro_tap>
+        , <&kp LT>
+        , <&kp GT>
+        , <&kp LEFT>;
+};
+
+pair_dquote: pair_double_quotes {
+    compatible = "zmk,behavior-macro";
+    #binding-cells = <0>;
+    tap-ms = <0>;
+    wait-ms = <0>;
+    bindings = <&macro_tap>
+        , <&kp DQT>
+        , <&kp DQT>
+        , <&kp LEFT>;
+};
+
 /* Hyper key macro - ⌘⌃⌥⇧ for Raycast/Alfred */
 hyper_key: hyper_key_macro {
 compatible = "zmk,behavior-macro";
@@ -41,7 +79,6 @@ bindings = <&macro_press &mkp LCLK>
 
 /* ------------------------------------------------------------------ */
 /*                   Mac Specific Macros                              */
-/*               press and hold left click to drag                    */
 /* ------------------------------------------------------------------ */
 
 /* macOS: Mission Control (Show all windows/desktops) */

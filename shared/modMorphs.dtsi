@@ -53,4 +53,4 @@ num_ht: num_hold_tap {
 };
 
 // Layer tap dance behaviors
-ZMK_TD_LAYER(td_LAYER_Keypad, 12)
+ZMK_TD_LAYER(td_LAYER_Keypad, LAYER_Keypad)

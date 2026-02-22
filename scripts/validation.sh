@@ -459,6 +459,60 @@ if [[ -f "$layers_file" ]]; then
 fi
 
 # ══════════════════════════════════════════════════════════════
+section "16. Auto-pair macros defined in shared/macros.dtsi"
+# ══════════════════════════════════════════════════════════════
+# modMorphs.dtsi references &pair_paren, &pair_angle, &pair_dquote.
+# These macros must be defined in shared/macros.dtsi or the DTS link
+# step will fail with "undefined node label".
+
+macros_file="$REPO_ROOT/shared/macros.dtsi"
+for label in pair_paren pair_angle pair_dquote; do
+  if grep -q "^${label}:" "$macros_file" 2>/dev/null; then
+    pass "shared/macros.dtsi — $label defined"
+  else
+    fail "shared/macros.dtsi — $label MISSING (referenced by modMorphs.dtsi)"
+  fi
+done
+
+# ══════════════════════════════════════════════════════════════
+section "17. pointing.h and mkp_drag_lock in all boards"
+# ══════════════════════════════════════════════════════════════
+# All boards use &mkp for mouse button actions (even without a physical
+# trackpad). pointing.h must be included everywhere so LCLK etc. resolve,
+# and mkp_drag_lock must live in shared/macros.dtsi (not board-specific).
+
+# mkp_drag_lock must be in shared/macros.dtsi
+if grep -q 'mkp_drag_lock' "$REPO_ROOT/shared/macros.dtsi" 2>/dev/null; then
+  pass "shared/macros.dtsi — mkp_drag_lock present"
+else
+  fail "shared/macros.dtsi — mkp_drag_lock MISSING"
+fi
+
+# Go60 and Glove80 use moergo-sc/zmk (new pointing API) → must have pointing.h
+for board in go60 glove80; do
+  case "$board" in
+    go60)    keymap="$REPO_ROOT/boards/go60/go60.keymap" ;;
+    glove80) keymap="$REPO_ROOT/boards/glove80/glove80.keymap" ;;
+  esac
+  if grep -q 'zmk/pointing\.h' "$keymap" 2>/dev/null; then
+    pass "boards/$board keymap — pointing.h included"
+  else
+    fail "boards/$board keymap — pointing.h MISSING (required for &mkp LCLK etc.)"
+  fi
+done
+
+# SliceMK uses slicemk/zmk (old mouse API) → must have mouse.h, not pointing.h
+slicemk_keymap="$REPO_ROOT/boards/slicemk/slicemk.keymap"
+if grep -q 'zmk/mouse\.h' "$slicemk_keymap" 2>/dev/null; then
+  pass "boards/slicemk keymap — mouse.h included (slicemk/zmk old API)"
+else
+  fail "boards/slicemk keymap — mouse.h MISSING (required for &mkp on slicemk/zmk fork)"
+fi
+if grep -q 'zmk/pointing\.h' "$slicemk_keymap" 2>/dev/null; then
+  warn "boards/slicemk keymap — includes pointing.h; verify slicemk/zmk fork has this header"
+fi
+
+# ══════════════════════════════════════════════════════════════
 printf "\n${BOLD}══════════════════════════════════════════════${NC}\n"
 printf "  ${GREEN}PASS: %-4d${NC}  ${RED}FAIL: %-4d${NC}  ${YELLOW}WARN: %-4d${NC}\n" \
        "$PASS" "$FAIL" "$WARN"
