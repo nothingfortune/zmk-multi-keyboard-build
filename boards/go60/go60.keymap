@@ -41,10 +41,12 @@
 /* ── Board-specific ────────────────────────────────── */
 #include "positions.dtsi"
 #include "position_groups.dtsi"
-#include "board_meta.dtsi"
 
 /* ── Shared library ────────────────────────────────── */
 #include "../../shared/layers.dtsi"
+
+/* ── Board-specific (requires LAYER_* macros) ──────── */
+#include "board_meta.dtsi"
 #include "../../shared/homeRowMods/hrm_timings.dtsi"
 #include "../../shared/macros.dtsi"
 #include "../../shared/homeRowMods/hrm_macros.dtsi"
