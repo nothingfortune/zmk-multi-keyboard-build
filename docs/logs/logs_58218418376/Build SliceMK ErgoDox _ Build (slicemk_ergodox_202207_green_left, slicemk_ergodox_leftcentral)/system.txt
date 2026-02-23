@@ -1,0 +1,14 @@
+2026-02-23T06:00:57.9000000Z Job is about to start running on the hosted runner: GitHub Actions 1000000216
+2026-02-23T06:00:57.8990000Z Job is waiting for a hosted runner to come online.
+2026-02-23T06:00:57.8930000Z Evaluating build-slicemk.if
+2026-02-23T06:00:57.8930000Z Evaluating: success()
+2026-02-23T06:00:57.8930000Z Result: true
+2026-02-23T06:00:57.8930000Z Evaluating build-slicemk.build.if
+2026-02-23T06:00:57.8930000Z Evaluating: success()
+2026-02-23T06:00:57.8930000Z Result: true
+2026-02-23T06:00:57.8940000Z Requested labels: ubuntu-latest
+2026-02-23T06:00:57.8940000Z Job defined at: zmkfirmware/zmk/.github/workflows/build-user-config.yml@refs/tags/v0.3
+2026-02-23T06:00:57.8940000Z Reusable workflow chain:
+2026-02-23T06:00:57.8940000Z nothingfortune/zmk-multi-keyboard-build/.github/workflows/build.yml@refs/heads/main (f871e81b3030d5ac68b1425aa41291210171cf96)
+2026-02-23T06:00:57.8940000Z -> zmkfirmware/zmk/.github/workflows/build-user-config.yml@refs/tags/v0.3 (3cf9006a9377f21c99e944e29e2a507d8c3e9069)
+2026-02-23T06:00:57.8940000Z Waiting for a runner to pick up this job...

@@ -58,10 +58,10 @@ arrow_right: arrow_word_right {
 /* Tab with Hyper key on deliberate hold */
 tab_hyper: tab_hyper {
     compatible = "zmk,behavior-hold-tap";
-    #binding-cells = <1>;
+    #binding-cells = <2>;
     tapping-term-ms = <TD_TAPPING_TERM>;
     flavor = "tap-preferred";
-    bindings = <&hyper_key>, <&kp>;
+    bindings = <&kp>, <&kp>;
 };
 
 // thumb_layer_access - TailorKey

@@ -1,0 +1,357 @@
+﻿2026-02-23T06:00:53.8337757Z ##[group]Run cachix/install-nix-action@v25
+2026-02-23T06:00:53.8339109Z with:
+2026-02-23T06:00:53.8340189Z   nix_path: nixpkgs=channel:nixos-22.05
+2026-02-23T06:00:53.8341396Z   enable_kvm: true
+2026-02-23T06:00:53.8342269Z ##[endgroup]
+2026-02-23T06:00:53.8450926Z ##[group]Run ${GITHUB_ACTION_PATH}/install-nix.sh
+2026-02-23T06:00:53.8452453Z [36;1m${GITHUB_ACTION_PATH}/install-nix.sh[0m
+2026-02-23T06:00:53.8491226Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-02-23T06:00:53.8492644Z env:
+2026-02-23T06:00:53.8493460Z   INPUT_EXTRA_NIX_CONFIG: 
+2026-02-23T06:00:53.8494479Z   INPUT_GITHUB_ACCESS_TOKEN: 
+2026-02-23T06:00:53.8495562Z   INPUT_INSTALL_OPTIONS: 
+2026-02-23T06:00:53.8496563Z   INPUT_INSTALL_URL: 
+2026-02-23T06:00:53.8497599Z   INPUT_NIX_PATH: nixpkgs=channel:nixos-22.05
+2026-02-23T06:00:53.8498868Z   INPUT_ENABLE_KVM: true
+2026-02-23T06:00:53.8500430Z   GITHUB_TOKEN: ***
+2026-02-23T06:00:53.8501339Z ##[endgroup]
+2026-02-23T06:00:53.8609867Z ##[group]Enabling KVM support
+2026-02-23T06:00:53.8675499Z KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"
+2026-02-23T06:00:53.8985574Z Enabled KVM
+2026-02-23T06:00:53.8987901Z ##[endgroup]
+2026-02-23T06:00:53.8989875Z ##[group]Installing Nix
+2026-02-23T06:00:53.9271901Z installer options: --no-channel-add --darwin-use-unencrypted-nix-store-volume --nix-extra-conf-file /tmp/tmp.fOzdq5gLZq/nix.conf --daemon --daemon-user-count 8
+2026-02-23T06:00:53.9490752Z * Host releases.nixos.org:443 was resolved.
+2026-02-23T06:00:53.9496253Z * IPv6: 2a04:4e42:77::347
+2026-02-23T06:00:53.9497246Z * IPv4: 199.232.89.91
+2026-02-23T06:00:53.9498298Z *   Trying 199.232.89.91:443...
+2026-02-23T06:00:53.9548819Z * Connected to releases.nixos.org (199.232.89.91) port 443
+2026-02-23T06:00:53.9562059Z * ALPN: curl offers h2,http/1.1
+2026-02-23T06:00:53.9563666Z } [5 bytes data]
+2026-02-23T06:00:53.9564796Z * TLSv1.3 (OUT), TLS handshake, Client hello (1):
+2026-02-23T06:00:53.9566052Z } [512 bytes data]
+2026-02-23T06:00:53.9780788Z *  CAfile: /etc/ssl/certs/ca-certificates.crt
+2026-02-23T06:00:53.9782975Z *  CApath: /etc/ssl/certs
+2026-02-23T06:00:53.9784204Z { [5 bytes data]
+2026-02-23T06:00:53.9785394Z * TLSv1.3 (IN), TLS handshake, Server hello (2):
+2026-02-23T06:00:53.9786896Z { [122 bytes data]
+2026-02-23T06:00:53.9788703Z * TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
+2026-02-23T06:00:53.9790903Z { [19 bytes data]
+2026-02-23T06:00:53.9792395Z * TLSv1.3 (IN), TLS handshake, Certificate (11):
+2026-02-23T06:00:53.9794273Z { [2602 bytes data]
+2026-02-23T06:00:53.9795873Z * TLSv1.3 (IN), TLS handshake, CERT verify (15):
+2026-02-23T06:00:53.9797723Z { [264 bytes data]
+2026-02-23T06:00:53.9798720Z * TLSv1.3 (IN), TLS handshake, Finished (20):
+2026-02-23T06:00:53.9800046Z { [36 bytes data]
+2026-02-23T06:00:53.9801151Z * TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
+2026-02-23T06:00:53.9802482Z } [1 bytes data]
+2026-02-23T06:00:53.9803411Z * TLSv1.3 (OUT), TLS handshake, Finished (20):
+2026-02-23T06:00:53.9804589Z } [36 bytes data]
+2026-02-23T06:00:53.9805888Z * SSL connection using TLSv1.3 / TLS_AES_128_GCM_SHA256 / X25519 / RSASSA-PSS
+2026-02-23T06:00:53.9807508Z * ALPN: server accepted h2
+2026-02-23T06:00:53.9808463Z * Server certificate:
+2026-02-23T06:00:53.9809374Z *  subject: CN=releases.nixos.org
+2026-02-23T06:00:53.9810539Z *  start date: Jan 13 01:58:01 2026 GMT
+2026-02-23T06:00:53.9811637Z *  expire date: Apr 13 01:58:00 2026 GMT
+2026-02-23T06:00:53.9813311Z *  subjectAltName: host "releases.nixos.org" matched cert's "releases.nixos.org"
+2026-02-23T06:00:53.9815076Z *  issuer: C=US; O=Let's Encrypt; CN=R12
+2026-02-23T06:00:53.9816211Z *  SSL certificate verify ok.
+2026-02-23T06:00:53.9818034Z *   Certificate level 0: Public key type RSA (2048/112 Bits/secBits), signed using sha256WithRSAEncryption
+2026-02-23T06:00:53.9820927Z *   Certificate level 1: Public key type RSA (2048/112 Bits/secBits), signed using sha256WithRSAEncryption
+2026-02-23T06:00:53.9823741Z *   Certificate level 2: Public key type RSA (4096/152 Bits/secBits), signed using sha256WithRSAEncryption
+2026-02-23T06:00:53.9826004Z { [5 bytes data]
+2026-02-23T06:00:53.9826997Z * TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+2026-02-23T06:00:53.9828255Z { [201 bytes data]
+2026-02-23T06:00:53.9829060Z * using HTTP/2
+2026-02-23T06:00:53.9830578Z * [HTTP/2] [1] OPENED stream for https://releases.nixos.org/nix/nix-2.19.2/install
+2026-02-23T06:00:53.9832232Z * [HTTP/2] [1] [:method: GET]
+2026-02-23T06:00:53.9833209Z * [HTTP/2] [1] [:scheme: https]
+2026-02-23T06:00:53.9834295Z * [HTTP/2] [1] [:authority: releases.nixos.org]
+2026-02-23T06:00:53.9835566Z * [HTTP/2] [1] [:path: /nix/nix-2.19.2/install]
+2026-02-23T06:00:53.9836760Z * [HTTP/2] [1] [user-agent: curl/8.5.0]
+2026-02-23T06:00:53.9837853Z * [HTTP/2] [1] [accept: */*]
+2026-02-23T06:00:53.9838979Z } [5 bytes data]
+2026-02-23T06:00:53.9839979Z > GET /nix/nix-2.19.2/install HTTP/2
+2026-02-23T06:00:53.9841090Z > Host: releases.nixos.org
+2026-02-23T06:00:53.9842033Z > User-Agent: curl/8.5.0
+2026-02-23T06:00:53.9842925Z > Accept: */*
+2026-02-23T06:00:53.9843667Z > 
+2026-02-23T06:00:53.9849000Z { [5 bytes data]
+2026-02-23T06:00:53.9862200Z < HTTP/2 200 
+2026-02-23T06:00:53.9863635Z < last-modified: Wed, 29 Nov 2023 16:16:25 GMT
+2026-02-23T06:00:53.9865530Z < etag: "65029e6468c72d36dcb083ab91c4a430"
+2026-02-23T06:00:53.9866865Z < x-amz-server-side-encryption: AES256
+2026-02-23T06:00:53.9868015Z < content-type: text/plain
+2026-02-23T06:00:53.9868944Z < server: AmazonS3
+2026-02-23T06:00:53.9869929Z < via: 1.1 varnish, 1.1 varnish
+2026-02-23T06:00:53.9870962Z < access-control-allow-origin: *
+2026-02-23T06:00:53.9872010Z < accept-ranges: bytes
+2026-02-23T06:00:53.9872879Z < age: 82287
+2026-02-23T06:00:53.9873681Z < date: Mon, 23 Feb 2026 06:00:53 GMT
+2026-02-23T06:00:53.9875021Z < x-served-by: cache-dub4395-DUB, cache-ewr-kewr1740034-EWR
+2026-02-23T06:00:53.9876380Z < x-cache: HIT, HIT
+2026-02-23T06:00:53.9877210Z < x-cache-hits: 90, 0
+2026-02-23T06:00:53.9878084Z < content-length: 4052
+2026-02-23T06:00:53.9878925Z < 
+2026-02-23T06:00:53.9879737Z { [4052 bytes data]
+2026-02-23T06:00:53.9880760Z * Connection #0 to host releases.nixos.org left intact
+2026-02-23T06:00:53.9935444Z downloading Nix 2.19.2 binary tarball for x86_64-linux from 'https://releases.nixos.org/nix/nix-2.19.2/nix-2.19.2-x86_64-linux.tar.xz' to '/tmp/nix-binary-tarball-unpack.iOEtdBIoW3'...
+2026-02-23T06:00:53.9980993Z   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+2026-02-23T06:00:53.9983870Z                                  Dload  Upload   Total   Spent    Left  Speed
+2026-02-23T06:00:53.9985568Z 
+2026-02-23T06:00:54.1141361Z   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+2026-02-23T06:00:54.1143797Z 100 20.6M  100 20.6M    0     0   177M      0 --:--:-- --:--:-- --:--:--  179M
+2026-02-23T06:00:55.5858078Z Note: a multi-user installation is possible. See https://nixos.org/manual/nix/stable/installation/installing-binary.html#multi-user-installation
+2026-02-23T06:00:55.5867168Z Warning: the flag --darwin-use-unencrypted-nix-store-volume
+2026-02-23T06:00:55.5868176Z          is no longer needed and will be removed in the future.
+2026-02-23T06:00:55.5868636Z 
+2026-02-23T06:00:55.5878631Z [1;31mSwitching to the Multi-user Installer[0m
+2026-02-23T06:00:55.5977184Z [32mWelcome to the Multi-User Nix Installation
+2026-02-23T06:00:55.5987355Z [0m
+2026-02-23T06:00:55.5988173Z This installation tool will set up your computer with the Nix package
+2026-02-23T06:00:55.5988666Z manager. This will happen in a few stages:
+2026-02-23T06:00:55.5989012Z 
+2026-02-23T06:00:55.5989364Z 1. Make sure your computer doesn't already have Nix. If it does, I
+2026-02-23T06:00:55.5990153Z    will show you instructions on how to clean up your old install.
+2026-02-23T06:00:55.5990440Z 
+2026-02-23T06:00:55.5990676Z 2. Show you what I am going to install and where. Then I will ask
+2026-02-23T06:00:55.5991079Z    if you are ready to continue.
+2026-02-23T06:00:55.5991292Z 
+2026-02-23T06:00:55.5991681Z 3. Create the system users [34m(uids [30001..30008])[0m and groups [34m(gid 30000)[0m
+2026-02-23T06:00:55.5992540Z    that the Nix daemon uses to run builds.
+2026-02-23T06:00:55.5992770Z 
+2026-02-23T06:00:55.5992969Z 4. Perform the basic installation of the Nix files daemon.
+2026-02-23T06:00:55.5993241Z 
+2026-02-23T06:00:55.5993460Z 5. Configure your shell to import special Nix Profile files, so you
+2026-02-23T06:00:55.5993852Z    can use Nix.
+2026-02-23T06:00:55.5993983Z 
+2026-02-23T06:00:55.5994083Z 6. Start the Nix daemon.
+2026-02-23T06:00:55.5994251Z 
+2026-02-23T06:00:55.5994544Z [32m[4;32mWould you like to see a more detailed list of what I will do?
+2026-02-23T06:00:55.5994992Z [0mNo TTY, assuming you would say yes :)
+2026-02-23T06:00:55.5999589Z 
+2026-02-23T06:00:55.6000213Z I will:
+2026-02-23T06:00:55.6000590Z 
+2026-02-23T06:00:55.6000974Z  - make sure your computer doesn't already have Nix files
+2026-02-23T06:00:55.6001752Z    (if it does, I will tell you how to clean them up.)
+2026-02-23T06:00:55.6002432Z  - create local users (see the list above for the users I'll make)
+2026-02-23T06:00:55.6002856Z  - create a local group (nixbld)
+2026-02-23T06:00:55.6003135Z  - install Nix in to /nix
+2026-02-23T06:00:55.6003419Z  - create a configuration file in /etc/nix
+2026-02-23T06:00:55.6003829Z  - set up the "default profile" by creating some Nix-related files in
+2026-02-23T06:00:55.6004197Z    /root
+2026-02-23T06:00:55.6015609Z  - back up /etc/bash.bashrc to /etc/bash.bashrc.backup-before-nix
+2026-02-23T06:00:55.6016169Z  - update /etc/bash.bashrc to include some Nix configuration
+2026-02-23T06:00:55.6026976Z  - load and start a service (at /etc/systemd/system/nix-daemon.service
+2026-02-23T06:00:55.6027491Z    and /etc/systemd/system/nix-daemon.socket) for nix-daemon
+2026-02-23T06:00:55.6027874Z 
+2026-02-23T06:00:55.6029578Z [32m[4;32mReady to continue?
+2026-02-23T06:00:55.6030598Z [0mNo TTY, assuming you would say yes :)
+2026-02-23T06:00:55.6047735Z 
+2026-02-23T06:00:55.6048407Z [34m---- let's talk about sudo -----------------------------------------------------
+2026-02-23T06:00:55.6058438Z [0mThis script is going to call sudo a lot. Normally, it would show you
+2026-02-23T06:00:55.6059244Z exactly what commands it is running and why. However, the script is
+2026-02-23T06:00:55.6060166Z run in a headless fashion, like this:
+2026-02-23T06:00:55.6060533Z 
+2026-02-23T06:00:55.6060817Z   $ curl -L https://nixos.org/nix/install | sh
+2026-02-23T06:00:55.6061093Z 
+2026-02-23T06:00:55.6061286Z or maybe in a CI pipeline. Because of that, I'm going to skip the
+2026-02-23T06:00:55.6061675Z verbose output in the interest of brevity.
+2026-02-23T06:00:55.6061882Z 
+2026-02-23T06:00:55.6061981Z If you would like to
+2026-02-23T06:00:55.6062231Z see the output, try like this:
+2026-02-23T06:00:55.6062399Z 
+2026-02-23T06:00:55.6062571Z   $ curl -L -o install-nix https://nixos.org/nix/install
+2026-02-23T06:00:55.6062909Z   $ sh ./install-nix
+2026-02-23T06:00:55.6063049Z 
+2026-02-23T06:00:55.6063081Z 
+2026-02-23T06:00:55.6063327Z [32m~~> Checking for artifacts of previous installs
+2026-02-23T06:00:55.6070750Z [0mBefore I try to install, I'll check for signs Nix already is or has
+2026-02-23T06:00:55.6071230Z been installed on this system.
+2026-02-23T06:00:55.6104067Z 
+2026-02-23T06:00:55.6104804Z [34m---- Nix config report ---------------------------------------------------------
+2026-02-23T06:00:55.6105891Z [0m[1m        Temp Dir[0m:	/tmp/tmp.r5gI57FOcL
+2026-02-23T06:00:55.6106561Z [1m        Nix Root[0m:	/nix
+2026-02-23T06:00:55.6107103Z [1m     Build Users[0m:	8
+2026-02-23T06:00:55.6107636Z [1m  Build Group ID[0m:	30000
+2026-02-23T06:00:55.6107967Z [1mBuild Group Name[0m:	nixbld
+2026-02-23T06:00:55.6108161Z 
+2026-02-23T06:00:55.6108288Z [4;34mbuild users:
+2026-02-23T06:00:55.6108562Z [0m[1m    Username[0m:	UID
+2026-02-23T06:00:55.6241955Z [1m     nixbld1[0m:	30001
+2026-02-23T06:00:55.6252023Z [1m     nixbld2[0m:	30002
+2026-02-23T06:00:55.6261940Z [1m     nixbld3[0m:	30003
+2026-02-23T06:00:55.6272313Z [1m     nixbld4[0m:	30004
+2026-02-23T06:00:55.6282583Z [1m     nixbld5[0m:	30005
+2026-02-23T06:00:55.6292535Z [1m     nixbld6[0m:	30006
+2026-02-23T06:00:55.6302495Z [1m     nixbld7[0m:	30007
+2026-02-23T06:00:55.6312504Z [1m     nixbld8[0m:	30008
+2026-02-23T06:00:55.6312837Z 
+2026-02-23T06:00:55.6313154Z [32m[4;32mReady to continue?
+2026-02-23T06:00:55.6313760Z [0mNo TTY, assuming you would say yes :)
+2026-02-23T06:00:55.6314074Z 
+2026-02-23T06:00:55.6314258Z [32m~~> Setting up the build group nixbld
+2026-02-23T06:00:55.6533741Z [0m[1m            Created[0m:	Yes
+2026-02-23T06:00:55.6556536Z 
+2026-02-23T06:00:55.6556974Z [32m~~> Setting up the build user nixbld1
+2026-02-23T06:00:55.6709355Z useradd warning: nixbld1's uid 30001 is greater than SYS_UID_MAX 999
+2026-02-23T06:00:55.6826936Z [0m[1m           Created[0m:	Yes
+2026-02-23T06:00:55.6832381Z [1m            Hidden[0m:	Yes
+2026-02-23T06:00:55.6851282Z [1m    Home Directory[0m:	/var/empty
+2026-02-23T06:00:55.6871740Z [1m              Note[0m:	Nix build user 1
+2026-02-23T06:00:55.6889516Z [1m   Logins Disabled[0m:	Yes
+2026-02-23T06:00:55.6915928Z [1m  Member of nixbld[0m:	Yes
+2026-02-23T06:00:55.6934257Z [1m    PrimaryGroupID[0m:	30000
+2026-02-23T06:00:55.6945142Z 
+2026-02-23T06:00:55.6945879Z [32m~~> Setting up the build user nixbld2
+2026-02-23T06:00:55.7083025Z useradd warning: nixbld2's uid 30002 is greater than SYS_UID_MAX 999
+2026-02-23T06:00:55.7178210Z [0m[1m           Created[0m:	Yes
+2026-02-23T06:00:55.7183860Z [1m            Hidden[0m:	Yes
+2026-02-23T06:00:55.7203813Z [1m    Home Directory[0m:	/var/empty
+2026-02-23T06:00:55.7225999Z [1m              Note[0m:	Nix build user 2
+2026-02-23T06:00:55.7244452Z [1m   Logins Disabled[0m:	Yes
+2026-02-23T06:00:55.7264163Z [1m  Member of nixbld[0m:	Yes
+2026-02-23T06:00:55.7282247Z [1m    PrimaryGroupID[0m:	30000
+2026-02-23T06:00:55.7293152Z 
+2026-02-23T06:00:55.7293682Z [32m~~> Setting up the build user nixbld3
+2026-02-23T06:00:55.7431133Z useradd warning: nixbld3's uid 30003 is greater than SYS_UID_MAX 999
+2026-02-23T06:00:55.7521712Z [0m[1m           Created[0m:	Yes
+2026-02-23T06:00:55.7526957Z [1m            Hidden[0m:	Yes
+2026-02-23T06:00:55.7545699Z [1m    Home Directory[0m:	/var/empty
+2026-02-23T06:00:55.7566411Z [1m              Note[0m:	Nix build user 3
+2026-02-23T06:00:55.7584444Z [1m   Logins Disabled[0m:	Yes
+2026-02-23T06:00:55.7603544Z [1m  Member of nixbld[0m:	Yes
+2026-02-23T06:00:55.7621792Z [1m    PrimaryGroupID[0m:	30000
+2026-02-23T06:00:55.7633140Z 
+2026-02-23T06:00:55.7633596Z [32m~~> Setting up the build user nixbld4
+2026-02-23T06:00:55.7766463Z useradd warning: nixbld4's uid 30004 is greater than SYS_UID_MAX 999
+2026-02-23T06:00:55.7856669Z [0m[1m           Created[0m:	Yes
+2026-02-23T06:00:55.7862246Z [1m            Hidden[0m:	Yes
+2026-02-23T06:00:55.7884140Z [1m    Home Directory[0m:	/var/empty
+2026-02-23T06:00:55.7904399Z [1m              Note[0m:	Nix build user 4
+2026-02-23T06:00:55.7922286Z [1m   Logins Disabled[0m:	Yes
+2026-02-23T06:00:55.7940994Z [1m  Member of nixbld[0m:	Yes
+2026-02-23T06:00:55.7959370Z [1m    PrimaryGroupID[0m:	30000
+2026-02-23T06:00:55.7969959Z 
+2026-02-23T06:00:55.7970530Z [32m~~> Setting up the build user nixbld5
+2026-02-23T06:00:55.8098494Z useradd warning: nixbld5's uid 30005 is greater than SYS_UID_MAX 999
+2026-02-23T06:00:55.8196673Z [0m[1m           Created[0m:	Yes
+2026-02-23T06:00:55.8202463Z [1m            Hidden[0m:	Yes
+2026-02-23T06:00:55.8220891Z [1m    Home Directory[0m:	/var/empty
+2026-02-23T06:00:55.8241404Z [1m              Note[0m:	Nix build user 5
+2026-02-23T06:00:55.8260759Z [1m   Logins Disabled[0m:	Yes
+2026-02-23T06:00:55.8280807Z [1m  Member of nixbld[0m:	Yes
+2026-02-23T06:00:55.8299847Z [1m    PrimaryGroupID[0m:	30000
+2026-02-23T06:00:55.8310988Z 
+2026-02-23T06:00:55.8311499Z [32m~~> Setting up the build user nixbld6
+2026-02-23T06:00:55.8448592Z useradd warning: nixbld6's uid 30006 is greater than SYS_UID_MAX 999
+2026-02-23T06:00:55.8544396Z [0m[1m           Created[0m:	Yes
+2026-02-23T06:00:55.8550441Z [1m            Hidden[0m:	Yes
+2026-02-23T06:00:55.8569032Z [1m    Home Directory[0m:	/var/empty
+2026-02-23T06:00:55.8590022Z [1m              Note[0m:	Nix build user 6
+2026-02-23T06:00:55.8608008Z [1m   Logins Disabled[0m:	Yes
+2026-02-23T06:00:55.8627098Z [1m  Member of nixbld[0m:	Yes
+2026-02-23T06:00:55.8645764Z [1m    PrimaryGroupID[0m:	30000
+2026-02-23T06:00:55.8656825Z 
+2026-02-23T06:00:55.8657291Z [32m~~> Setting up the build user nixbld7
+2026-02-23T06:00:55.8784253Z useradd warning: nixbld7's uid 30007 is greater than SYS_UID_MAX 999
+2026-02-23T06:00:55.8877188Z [0m[1m           Created[0m:	Yes
+2026-02-23T06:00:55.8883614Z [1m            Hidden[0m:	Yes
+2026-02-23T06:00:55.8906651Z [1m    Home Directory[0m:	/var/empty
+2026-02-23T06:00:55.8927894Z [1m              Note[0m:	Nix build user 7
+2026-02-23T06:00:55.8950521Z [1m   Logins Disabled[0m:	Yes
+2026-02-23T06:00:55.8972370Z [1m  Member of nixbld[0m:	Yes
+2026-02-23T06:00:55.8994585Z [1m    PrimaryGroupID[0m:	30000
+2026-02-23T06:00:55.9006055Z 
+2026-02-23T06:00:55.9006569Z [32m~~> Setting up the build user nixbld8
+2026-02-23T06:00:55.9142097Z useradd warning: nixbld8's uid 30008 is greater than SYS_UID_MAX 999
+2026-02-23T06:00:55.9238041Z [0m[1m           Created[0m:	Yes
+2026-02-23T06:00:55.9244299Z [1m            Hidden[0m:	Yes
+2026-02-23T06:00:55.9266114Z [1m    Home Directory[0m:	/var/empty
+2026-02-23T06:00:55.9287760Z [1m              Note[0m:	Nix build user 8
+2026-02-23T06:00:55.9311046Z [1m   Logins Disabled[0m:	Yes
+2026-02-23T06:00:55.9332591Z [1m  Member of nixbld[0m:	Yes
+2026-02-23T06:00:55.9355402Z [1m    PrimaryGroupID[0m:	30000
+2026-02-23T06:00:55.9355743Z 
+2026-02-23T06:00:55.9357173Z [32m~~> Setting up the basic directory structure
+2026-02-23T06:00:55.9567229Z [0minstall: creating directory '/nix'
+2026-02-23T06:00:55.9567839Z install: creating directory '/nix/var'
+2026-02-23T06:00:55.9568341Z install: creating directory '/nix/var/log'
+2026-02-23T06:00:55.9568883Z install: creating directory '/nix/var/log/nix'
+2026-02-23T06:00:55.9569465Z install: creating directory '/nix/var/log/nix/drvs'
+2026-02-23T06:00:55.9570235Z install: creating directory '/nix/var/nix'
+2026-02-23T06:00:55.9570791Z install: creating directory '/nix/var/nix/db'
+2026-02-23T06:00:55.9571713Z install: creating directory '/nix/var/nix/gcroots'
+2026-02-23T06:00:55.9572304Z install: creating directory '/nix/var/nix/profiles'
+2026-02-23T06:00:55.9572902Z install: creating directory '/nix/var/nix/temproots'
+2026-02-23T06:00:55.9573508Z install: creating directory '/nix/var/nix/userpool'
+2026-02-23T06:00:55.9574137Z install: creating directory '/nix/var/nix/daemon-socket'
+2026-02-23T06:00:55.9574856Z install: creating directory '/nix/var/nix/gcroots/per-user'
+2026-02-23T06:00:55.9575580Z install: creating directory '/nix/var/nix/profiles/per-user'
+2026-02-23T06:00:55.9645497Z install: creating directory '/nix/store'
+2026-02-23T06:00:55.9722523Z install: creating directory '/etc/nix'
+2026-02-23T06:00:55.9732796Z 
+2026-02-23T06:00:55.9733223Z [32m~~> Installing Nix
+2026-02-23T06:00:56.1712081Z [0m      Alright! We have our first nix at /nix/store/smfmnz0ylx80wkbqbjibj7zcw4q668xp-nix-2.19.2
+2026-02-23T06:00:56.2108264Z       Just finished getting the nix database ready.
+2026-02-23T06:00:56.2111242Z 
+2026-02-23T06:00:56.2112395Z [32m~~> Setting up shell profiles: /etc/bashrc /etc/profile.d/nix.sh /etc/zshrc /etc/bash.bashrc /etc/zsh/zshrc
+2026-02-23T06:00:56.2266615Z [0m
+2026-02-23T06:00:56.2266946Z # Nix
+2026-02-23T06:00:56.2267471Z if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+2026-02-23T06:00:56.2268250Z   . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+2026-02-23T06:00:56.2268778Z fi
+2026-02-23T06:00:56.2269013Z # End Nix
+2026-02-23T06:00:56.2269165Z 
+2026-02-23T06:00:56.2426859Z 
+2026-02-23T06:00:56.2428795Z # Nix
+2026-02-23T06:00:56.2429379Z if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+2026-02-23T06:00:56.2430180Z   . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+2026-02-23T06:00:56.2430764Z fi
+2026-02-23T06:00:56.2430913Z # End Nix
+2026-02-23T06:00:56.2431003Z 
+2026-02-23T06:00:56.2584106Z 
+2026-02-23T06:00:56.2584377Z # Nix
+2026-02-23T06:00:56.2584845Z if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+2026-02-23T06:00:56.2585448Z   . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+2026-02-23T06:00:56.2586008Z fi
+2026-02-23T06:00:56.2586271Z # End Nix
+2026-02-23T06:00:56.2586452Z 
+2026-02-23T06:00:56.2736056Z 
+2026-02-23T06:00:56.2736374Z # Nix
+2026-02-23T06:00:56.2736850Z if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+2026-02-23T06:00:56.2737621Z   . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+2026-02-23T06:00:56.2738187Z fi
+2026-02-23T06:00:56.2738447Z # End Nix
+2026-02-23T06:00:56.2738620Z 
+2026-02-23T06:00:56.2760892Z 
+2026-02-23T06:00:56.2762113Z [32m~~> Setting up shell profiles for Fish with conf.d/nix.fish inside /etc/fish /usr/local/etc/fish /opt/homebrew/etc/fish /opt/local/etc/fish
+2026-02-23T06:00:56.2832028Z [0m
+2026-02-23T06:00:56.2832460Z [32m~~> Setting up the default profile
+2026-02-23T06:00:56.3111241Z installing 'nix-2.19.2'
+2026-02-23T06:00:56.3233179Z building '/nix/store/g8k2ay0cs99bzfzdrgl98j8rybjjki98-user-environment.drv'...
+2026-02-23T06:00:56.3618820Z installing 'nss-cacert-3.92'
+2026-02-23T06:00:56.3738280Z building '/nix/store/yyad8x4mww9vi0njnc0mw4ii4fcslyhc-user-environment.drv'...
+2026-02-23T06:00:56.3934235Z [0m
+2026-02-23T06:00:56.3934797Z [32m~~> Setting up the nix-daemon systemd service
+2026-02-23T06:00:56.4200602Z Created symlink /etc/systemd/system/nix-daemon.service → /nix/var/nix/profiles/default/lib/systemd/system/nix-daemon.service.
+2026-02-23T06:00:56.6897097Z Created symlink /etc/systemd/system/nix-daemon.socket → /nix/var/nix/profiles/default/lib/systemd/system/nix-daemon.socket.
+2026-02-23T06:00:56.6899146Z Created symlink /etc/systemd/system/sockets.target.wants/nix-daemon.socket → /nix/var/nix/profiles/default/lib/systemd/system/nix-daemon.socket.
+2026-02-23T06:00:57.2437004Z [0m[32mAlright! We're done!
+2026-02-23T06:00:57.2459355Z [0mTry it! Open a new terminal, and type:
+2026-02-23T06:00:57.2460379Z 
+2026-02-23T06:00:57.2460634Z   $ nix-shell -p nix-info --run "nix-info -m"
+2026-02-23T06:00:57.2461279Z 
+2026-02-23T06:00:57.2461570Z Thank you for using this installer. If you have any feedback or need
+2026-02-23T06:00:57.2462140Z help, don't hesitate:
+2026-02-23T06:00:57.2462349Z 
+2026-02-23T06:00:57.2462478Z You can open an issue at
+2026-02-23T06:00:57.2463132Z https://github.com/NixOS/nix/issues/new?labels=installer&template=installer.md
+2026-02-23T06:00:57.2463680Z 
+2026-02-23T06:00:57.2463956Z Or get in touch with the community: https://nixos.org/community
+2026-02-23T06:00:57.2482386Z 
+2026-02-23T06:00:57.2483042Z [34m---- Reminders -----------------------------------------------------------------
+2026-02-23T06:00:57.2484060Z [0m[34m[ 1 ][0m
+2026-02-23T06:00:57.2485509Z Nix won't work in active shell sessions until you restart them.
+2026-02-23T06:00:57.2485979Z 
+2026-02-23T06:00:57.3148466Z ##[endgroup]

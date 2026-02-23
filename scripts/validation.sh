@@ -643,6 +643,38 @@ for board in go60 glove80 slicemk; do
 done
 
 # ══════════════════════════════════════════════════════════════
+section "19. hold-tap behaviors must have #binding-cells = <2>"
+# ══════════════════════════════════════════════════════════════
+# ZMK's zmk,behavior-hold-tap YAML schema declares #binding-cells as a
+# const = 2. Any other value causes a devicetree error at build time.
+
+HOLD_TAP_FILES=(
+  shared/behaviors.dtsi
+  shared/homeRowMods/hrm_behaviors.dtsi
+)
+
+for rel in "${HOLD_TAP_FILES[@]}"; do
+  f="$REPO_ROOT/$rel"
+  [[ -f "$f" ]] || continue
+  bad_nodes=$(perl -0777 -e '
+    my $text = do { local $/; <> };
+    my @bad;
+    while ($text =~ /(\w+)\s*:\s*\w+\s*\{([^{}]+)\}/gs) {
+      my ($label, $body) = ($1, $2);
+      next unless $body =~ /compatible\s*=\s*"zmk,behavior-hold-tap"/;
+      push @bad, $label unless $body =~ /#binding-cells\s*=\s*<2>/;
+    }
+    print join(" ", @bad), "\n";
+  ' "$f")
+  bad_nodes=$(echo "$bad_nodes" | xargs)
+  if [[ -z "$bad_nodes" ]]; then
+    pass "$rel — all hold-tap behaviors have #binding-cells = <2>"
+  else
+    fail "$rel — hold-tap behaviors with wrong #binding-cells (must be <2>): $bad_nodes"
+  fi
+done
+
+# ══════════════════════════════════════════════════════════════
 printf "\n${BOLD}══════════════════════════════════════════════${NC}\n"
 printf "  ${GREEN}PASS: %-4d${NC}  ${RED}FAIL: %-4d${NC}  ${YELLOW}WARN: %-4d${NC}\n" \
        "$PASS" "$FAIL" "$WARN"
