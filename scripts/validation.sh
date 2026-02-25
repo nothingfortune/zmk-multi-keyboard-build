@@ -722,6 +722,58 @@ else
 fi
 
 # ══════════════════════════════════════════════════════════════
+section "21. No behavior/macro definitions inside combo files"
+# ══════════════════════════════════════════════════════════════
+# Combo files (shared/combos/*.dtsi) are included inside a DTS
+#   / { combos { compatible = "zmk,combos"; ... }; };
+# block. DTS label definitions placed there land under /combos/,
+# while the same label defined in a behavior/macro file lands under
+# /behaviors/. The DeviceTree linker then reports:
+#   "Label 'foo' appears on /behaviors/foo and on /combos/foo"
+# Fix: combo files must only contain combo entries, never behavior
+# node definitions.
+
+BEHAVIOR_LABEL_SOURCES=(
+  shared/macros.dtsi
+  shared/homeRowMods/hrm_macros.dtsi
+  shared/behaviors.dtsi
+  shared/modMorphs.dtsi
+  shared/autoshift.dtsi
+  shared/bluetooth.dtsi
+  shared/magic.dtsi
+  shared/homeRowMods/hrm_behaviors.dtsi
+)
+
+# Collect all labels defined in behavior/macro files
+behavior_labels=""
+for rel in "${BEHAVIOR_LABEL_SOURCES[@]}"; do
+  f="$REPO_ROOT/$rel"
+  [[ -f "$f" ]] || continue
+  behavior_labels+=$(perl -ne 'print "$1\n" if /^\s*(\w+)\s*:\s*\w+\s*\{/' "$f" 2>/dev/null)$'\n'
+done
+
+# Check each combo file for behavior-style label definitions
+while IFS= read -r -d '' combo_file; do
+  rel="${combo_file#$REPO_ROOT/}"
+  combo_defined=$(perl -ne 'print "$1\n" if /^\s*(\w+)\s*:\s*\w+\s*\{/' "$combo_file" 2>/dev/null)
+  if [[ -z "$combo_defined" ]]; then
+    pass "$rel — no behavior/macro definitions (combo entries only)"
+    continue
+  fi
+  # Any label defined in the combo file that is also in a behavior file is a duplicate
+  cross_dupes=()
+  while IFS= read -r label; do
+    [[ -z "$label" ]] && continue
+    echo "$behavior_labels" | grep -qx "$label" && cross_dupes+=("$label")
+  done < <(echo "$combo_defined")
+  if [[ ${#cross_dupes[@]} -gt 0 ]]; then
+    fail "$rel — behavior/macro definitions that duplicate shared files (DTS label conflict): ${cross_dupes[*]}"
+  else
+    pass "$rel — no cross-file DTS label conflicts with behavior/macro files"
+  fi
+done < <(find "$REPO_ROOT/shared/combos" -name '*.dtsi' -print0)
+
+# ══════════════════════════════════════════════════════════════
 printf "\n${BOLD}══════════════════════════════════════════════${NC}\n"
 printf "  ${GREEN}PASS: %-4d${NC}  ${RED}FAIL: %-4d${NC}  ${YELLOW}WARN: %-4d${NC}\n" \
        "$PASS" "$FAIL" "$WARN"
