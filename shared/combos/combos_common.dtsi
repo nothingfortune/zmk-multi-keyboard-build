@@ -35,7 +35,6 @@ combo_tabswitch_ctrl_v1_TKZ {
     layers = <LAYER_Base LAYER_Typing LAYER_Autoshift>;
 };
 
-
 // mod_tab_switcher_chord -  TailorKey
 mod_tab_chord_v2_TKZ: mod_tab_chord_v2_TKZ {
     label = "&MOD_TAB_CHORD_V2_TKZ";
@@ -61,6 +60,7 @@ mod_tab_chord_v2_TKZ: mod_tab_chord_v2_TKZ {
 // 
 // mod_tab_switcher - TailorKey
 //
+
 mod_tab_v1_TKZ: mod_tab_v1_TKZ {
     label = "&MOD_TAB_V1_TKZ";
     compatible = "zmk,behavior-macro-one-param";

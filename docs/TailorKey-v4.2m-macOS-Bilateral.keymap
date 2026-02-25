@@ -61,10 +61,6 @@
         bindings = <&mo layer>, <&to layer>; \
 )
 
-
-
-
-
 /* Key positions */
 
 #define POS_LH_C6R1 0
