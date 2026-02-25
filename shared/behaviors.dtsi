@@ -20,7 +20,7 @@ upDownArrows: up_down_arrows {
     compatible = "zmk,behavior-mod-morph";
     #binding-cells = <0>;
     bindings = <&kp DOWN>, <&kp UP>;
-    mods = <(MOD_LSFT|MOD_LCTL|MOD_RCTL|MOD_LALT|MOD_RALT|MOD_LGUI|MOD_RGUI)>;
+    mods = <(MOD_LSFT|MOD_RSFT|MOD_LCTL|MOD_RCTL|MOD_LALT|MOD_RALT|MOD_LGUI|MOD_RGUI)>;
 };
 
 /* Hold backspace = delete word (Option+Backspace on macOS) */
@@ -74,12 +74,3 @@ thumb_v2_TKZ: thumb_v2_TKZ {
     quick-tap-ms = <THUMB_QUICK_TAP>;
 };
 
-// space_layer_access - TailorKey
-space_v3_TKZ: space_v3_TKZ {
-    compatible = "zmk,behavior-hold-tap";
-    #binding-cells = <2>;
-    tapping-term-ms = <SPACE_TAPPING_TERM>;
-    bindings = <&mo>, <&kp>;
-    flavor = "balanced";
-    quick-tap-ms = <SPACE_QUICK_TAP>;
-};

@@ -45,7 +45,7 @@
             bindings = <&HRM_left_index_hold_v1B_TKZ>, <&kp>;
             flavor = "tap-preferred";
             quick-tap-ms = <HRM_QUICK_TAP>;
-            require-prior-idle-ms = <HRM_INDEX_TAPPING_TERM>;
+            require-prior-idle-ms = <HRM_INDEX_PRIOR_IDLE>;
             hold-trigger-key-positions = <POS_RH_T3 POS_RH_T2 POS_RH_T1 POS_RH_C1R1 POS_RH_C2R1 POS_RH_C3R1 POS_RH_C4R1 POS_RH_C5R1 POS_RH_C1R2 POS_RH_C2R2 POS_RH_C3R2 POS_RH_C4R2 POS_RH_C5R2 POS_RH_C1R3 POS_RH_C2R3 POS_RH_C3R3 POS_RH_C4R3 POS_RH_C5R3 POS_RH_C1R4 POS_RH_C2R4 POS_RH_C3R4 POS_RH_C4R4 POS_RH_C5R4 POS_RH_C2R5 POS_RH_C3R5 POS_RH_C4R5 POS_RH_C6R1 POS_RH_C6R2 POS_RH_C6R3 POS_RH_C6R4 POS_LH_T2 POS_LH_T3 POS_LH_T1>;
             hold-trigger-on-release;
         };
@@ -67,11 +67,11 @@
         HRM_left_middy_pinky_v1B_TKZ: HRM_left_middy_pinky_v1B_TKZ {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
-            tapping-term-ms = <HRM_PINKY_TAPPING_TERM>;
+            tapping-term-ms = <HRM_MIDDY_TAPPING_TERM>;
             bindings = <&kp>, <&HRM_left_middy_tap_v1B_TKZ>;
             flavor = "tap-preferred";
             quick-tap-ms = <HRM_QUICK_TAP>;
-            require-prior-idle-ms = <HRM_MIDDY_PRIOR_IDLE>;
+            require-prior-idle-ms = <HRM_PINKY_PRIOR_IDLE>;
             hold-trigger-key-positions = <POS_RH_T3 POS_RH_T2 POS_RH_T1 POS_RH_C1R1 POS_RH_C2R1 POS_RH_C3R1 POS_RH_C4R1 POS_RH_C5R1 POS_RH_C1R2 POS_RH_C2R2 POS_RH_C3R2 POS_RH_C4R2 POS_RH_C5R2 POS_RH_C1R3 POS_RH_C2R3 POS_RH_C3R3 POS_RH_C4R3 POS_RH_C5R3 POS_RH_C1R4 POS_RH_C2R4 POS_RH_C3R4 POS_RH_C4R4 POS_RH_C5R4 POS_RH_C2R5 POS_RH_C3R5 POS_RH_C4R5 POS_RH_C6R1 POS_RH_C6R2 POS_RH_C6R3 POS_RH_C6R4 POS_LH_T2 POS_LH_T3 POS_LH_T1>;
             hold-trigger-on-release;
         };
@@ -227,7 +227,7 @@
             bindings = <&kp>, <&HRM_right_index_tap_v1B_TKZ>;
             flavor = "tap-preferred";
             quick-tap-ms = <HRM_QUICK_TAP>;
-            require-prior-idle-ms = <HRM_PINKY_PRIOR_IDLE>;
+            require-prior-idle-ms = <HRM_INDEX_PRIOR_IDLE>;
             hold-trigger-key-positions = <POS_LH_C6R1 POS_LH_C6R2 POS_LH_C6R3 POS_LH_C6R4 POS_LH_C5R4 POS_LH_C5R3 POS_LH_C5R2 POS_LH_C4R1 POS_LH_C5R1 POS_LH_C4R2 POS_LH_C4R3 POS_LH_C4R4 POS_LH_C4R5 POS_LH_C3R5 POS_LH_C3R4 POS_LH_C3R3 POS_LH_C3R2 POS_LH_C3R1 POS_LH_C2R1 POS_LH_C1R1 POS_LH_C1R2 POS_LH_C2R2 POS_LH_C2R3 POS_LH_C1R3 POS_LH_C1R4 POS_LH_C2R4 POS_LH_C2R5 POS_LH_T3 POS_LH_T2 POS_LH_T1 POS_RH_T1 POS_RH_T2 POS_RH_T3>;
             hold-trigger-on-release;
         };

@@ -14,10 +14,10 @@ combo_sticky_meh_rght_v1_TKZ {
     layers = <LAYER_Base LAYER_Autoshift LAYER_Typing>;
 };
 
-// capslock when pressing both T1's - TailorKey
-combo_capslock_v1_TKZ {
+// expose when pressing both T1's - TailorKey
+combo_expose_v1_TKZ {
     key-positions = <POS_LH_T1 POS_RH_T1>;
-    bindings = <&kp CAPS>;
+    bindings = <&mac_app_expose>;
     layers = <LAYER_Base LAYER_Typing LAYER_Autoshift>;
 };
 

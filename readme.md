@@ -240,3 +240,13 @@ To verify your PCB revision, put the keyboard into bootloader mode and check `IN
 | `slicemk_ergodox_202104` | `slicemk_ergodox_202104` |
 
 Update `build.yaml` and `config/slicemk_ergodox_leftcentral.conf` if your board differs.
+
+Behaviors are reusable actions or functions (like key presses, layer toggles, or custom logic) that can be assigned to keys or referenced in combos/macros. They define what happens when a key is activated.
+
+Combos are triggers that activate when multiple keys are pressed simultaneously. Instead of each key’s normal action, a combo can execute a behavior, such as sending a special keycode or running a macro.
+
+Tap Dances allow a single key to perform different actions based on how many times it’s tapped or held. For example, a key might send a letter on a single tap, a symbol on a double tap, or act as a modifier when held.
+
+Macros are sequences of actions (like multiple key presses or behaviors) that execute in order when triggered. Macros can be referenced by keys, combos, or tap dances, and are useful for automating complex input patterns.
+
+In summary: behaviors are the building blocks, combos are multi-key triggers, tap dances are single-key multi-action triggers, and macros are ordered action sequences. Each offers a different way to enhance keyboard functionality in ZMK.
