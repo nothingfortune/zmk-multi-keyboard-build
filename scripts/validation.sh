@@ -32,6 +32,7 @@ LAYER_NAMES=(
   cursor keypad symbol
   mouse mouse_slow mouse_fast mouse_warp
   magic
+  symbol_lh symbol_rh
 )
 
 # Count & binding tokens in a layer file (strips block comments)
@@ -104,7 +105,7 @@ for f in "${REQUIRED_FILES[@]}"; do
 done
 
 # ══════════════════════════════════════════════════════════════
-section "2. Layer files per board (expect 19)"
+section "2. Layer files per board (expect 21)"
 # ══════════════════════════════════════════════════════════════
 
 for board in go60 glove80 slicemk; do
@@ -113,7 +114,7 @@ for board in go60 glove80 slicemk; do
     [[ -f "$REPO_ROOT/boards/$board/layers/$layer.dtsi" ]] || missing+=("$layer")
   done
   if [[ ${#missing[@]} -eq 0 ]]; then
-    pass "boards/$board/layers/ — all 19 layer files present"
+    pass "boards/$board/layers/ — all 21 layer files present"
   else
     fail "boards/$board/layers/ — missing: ${missing[*]}"
   fi
@@ -123,7 +124,7 @@ done
 # SliceMK excludes magic (RGB_STATUS unsupported) → 18; others → 19
 for board in go60 glove80 slicemk; do
   case "$board" in
-    go60)    keymap="$REPO_ROOT/boards/go60/go60.keymap";       expected_layers=19 ;;
+    go60)    keymap="$REPO_ROOT/boards/go60/go60.keymap";       expected_layers=21 ;;
     glove80) keymap="$REPO_ROOT/boards/glove80/glove80.keymap"; expected_layers=19 ;;
     slicemk) keymap="$REPO_ROOT/boards/slicemk/slicemk.keymap"; expected_layers=18 ;;
   esac
@@ -293,6 +294,7 @@ LAYER_CONSTS=(
   Cursor Keypad Symbol
   Mouse MouseSlow MouseFast MouseWarp
   Magic
+  Symbol_lh Symbol_rh
 )
 
 layers_file="$REPO_ROOT/shared/layers.dtsi"
@@ -301,7 +303,7 @@ for lc in "${LAYER_CONSTS[@]}"; do
   grep -q "LAYER_${lc}" "$layers_file" 2>/dev/null || missing_consts+=("LAYER_${lc}")
 done
 if [[ ${#missing_consts[@]} -eq 0 ]]; then
-  pass "shared/layers.dtsi — all 19 LAYER_* constants defined"
+  pass "shared/layers.dtsi — all 21 LAYER_* constants defined"
 else
   fail "shared/layers.dtsi — missing: ${missing_consts[*]}"
 fi
@@ -362,10 +364,10 @@ for board in glove80 slicemk; do
     non_trans=$(count_non_trans "$file")
     [[ "$non_trans" -eq 0 ]] && stub_count=$((stub_count + 1)) || true
   done
-  if [[ "$stub_count" -eq 19 ]]; then
-    warn "boards/$board/layers/ — all 19 layers are &trans stubs (need to be filled in)"
+  if [[ "$stub_count" -eq 21 ]]; then
+    warn "boards/$board/layers/ — all 21 layers are &trans stubs (need to be filled in)"
   elif [[ "$stub_count" -gt 0 ]]; then
-    warn "boards/$board/layers/ — $stub_count of 19 layers still have all-&trans bindings"
+    warn "boards/$board/layers/ — $stub_count of 21 layers still have all-&trans bindings"
   else
     pass "boards/$board/layers/ — all layers have real bindings"
   fi
