@@ -185,7 +185,7 @@
 			/* Row 5 */
 				&kp LCTRL                       &kp LALT                        &kp LGUI                        &mkp LCLK                       &mkp RCLK                                                                                                                                                       &arrow_left LC(LEFT) LEFT       &kp UP                          &kp DOWN                        &arrow_right LC(RIGHT) RIGHT    &hyper_key
 			/* Thumb Cluster */
-				&kp DEL                         &screenshot                     &kp C_NEXT                      &kp DEL
+				&kp DEL                         &trans                     &kp C_NEXT                      &kp DEL
 			/* Thumb Cluster */
 				&lt LAYER_NAV SPACE             &lt LAYER_PWR RET               &kp HOME                        &kp END                         &bspc_word LA(BACKSPACE) BACKSPACE &lt LAYER_NAV SPACE
 			/* Thumb Cluster */

@@ -10,13 +10,13 @@
  * rolls don't accidentally activate modifiers.                  */
 #define HRM_INDEX_TAPPING_TERM   190
 #define HRM_MIDDY_TAPPING_TERM   210
-#define HRM_RING_TAPPING_TERM    240
-#define HRM_PINKY_TAPPING_TERM   250
+#define HRM_RING_TAPPING_TERM    230
+#define HRM_PINKY_TAPPING_TERM   240
 
 /* Prior-idle: the keyboard must have been idle this many ms
  * before an HRM hold can activate. Prevents rolls from firing
  * modifiers unintentionally.                                    */
-#define HRM_INDEX_PRIOR_IDLE     125
+#define HRM_INDEX_PRIOR_IDLE     150
 #define HRM_MIDDY_PRIOR_IDLE     150
 #define HRM_RING_PRIOR_IDLE      150
 #define HRM_PINKY_PRIOR_IDLE     150
