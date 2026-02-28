@@ -91,7 +91,6 @@
         #include "layers/mouse_slow.dtsi"
         #include "layers/mouse_fast.dtsi"
         #include "layers/mouse_warp.dtsi"
-        #include "layers/magic.dtsi"
         #include "layers/symbol_lh.dtsi"
         #include "layers/symbol_rh.dtsi"
     };
