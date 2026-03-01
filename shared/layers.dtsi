@@ -1,28 +1,27 @@
-/* Automatically generated layer name defines */
-#define LAYER_Base 0
-#define LAYER_Typing 1
-#define LAYER_Autoshift 2
-#define LAYER_LeftPinky 3
-#define LAYER_LeftRingy 4
-#define LAYER_LeftMiddy 5
-#define LAYER_LeftIndex 6
-#define LAYER_RightPinky 7
-#define LAYER_RightRingy 8
-#define LAYER_RightMiddy 9
-#define LAYER_RightIndex 10
-#define LAYER_Cursor 11
-#define LAYER_Keypad 12
-#define LAYER_Symbol 13
-#define LAYER_Mouse 14
-#define LAYER_MouseSlow 15
-#define LAYER_MouseFast 16
-#define LAYER_MouseWarp 17
-/* #define LAYER_Gaming 18 Removed Feb 11*/
-#define LAYER_Magic 18
-#define LAYER_Symbol_lh 19
-#define LAYER_Symbol_rh 20
+#define LAYER_Base        0
+#define LAYER_Typing      1
+#define LAYER_Autoshift   2
+#define LAYER_LeftPinky   3
+#define LAYER_LeftRingy   4
+#define LAYER_LeftMiddy   5
+#define LAYER_LeftIndex   6
+#define LAYER_RightPinky  7
+#define LAYER_RightRingy  8
+#define LAYER_RightMiddy  9
+#define LAYER_RightIndex  10
+#define LAYER_Cursor      11
+#define LAYER_Keypad      12
+#define LAYER_Symbol      13
+#define LAYER_Mouse       14
+#define LAYER_MouseSlow   15
+#define LAYER_MouseFast   16
+#define LAYER_MouseWarp   17
+#define LAYER_Magic       18
+#define LAYER_Symbol_lh   19
+#define LAYER_Symbol_rh   20
 
-/* To deal with the situation where there is no Lower layer, to keep &lower happy */
+/* ZMK_TD_LAYER(lower, ...) in board_meta.dtsi requires LAYER_Lower.
+ * This board has no dedicated lower layer, so alias it to Base. */
 #ifndef LAYER_Lower
 #define LAYER_Lower 0
 #endif

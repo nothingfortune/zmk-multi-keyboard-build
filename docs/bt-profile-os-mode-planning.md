@@ -1,5 +1,7 @@
 # ZMK Bluetooth Profile-Based OS Mode Switching
 
+## Status: On Hold
+
 ## Goal
 Enable automatic modifier swapping (LGUI ↔ LCTRL) based on the active Bluetooth profile, so the keyboard adapts to Mac or PC without manual layer toggling or deep keymap changes.
 

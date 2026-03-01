@@ -22,6 +22,7 @@ LAYER_NAMES=(
   cursor keypad symbol
   mouse mouse_slow mouse_fast mouse_warp
   magic
+  symbol_lh symbol_rh
 )
 
 if [[ -t 1 ]]; then
@@ -51,6 +52,7 @@ ${BOLD}Layers:${NC}
   cursor  keypad  symbol
   mouse  mouse_slow  mouse_fast  mouse_warp
   magic
+  symbol_lh  symbol_rh
 
 EOF
 }

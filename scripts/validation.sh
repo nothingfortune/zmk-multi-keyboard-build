@@ -121,7 +121,7 @@ for board in go60 glove80 slicemk; do
 done
 
 # Layer files actually included in each board's keymap
-# SliceMK excludes magic (RGB_STATUS unsupported) → 18; others → 19
+# SliceMK excludes magic (RGB_STATUS unsupported) → 20; others → 21
 for board in go60 glove80 slicemk; do
   case "$board" in
     go60)    keymap="$REPO_ROOT/boards/go60/go60.keymap";       expected_layers=21 ;;

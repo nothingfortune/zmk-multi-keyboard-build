@@ -1,6 +1,0 @@
-2026-02-23T06:02:00.0130000Z Evaluating build-slicemk.if
-2026-02-23T06:02:00.0130000Z Evaluating: success()
-2026-02-23T06:02:00.0130000Z Result: true
-2026-02-23T06:02:00.0130000Z Evaluating build-slicemk.merge.if
-2026-02-23T06:02:00.0130000Z Evaluating: success()
-2026-02-23T06:02:00.0130000Z Result: false
