@@ -594,6 +594,12 @@ for board in go60 glove80 slicemk; do
   # Collect all user-defined labels from shared + board dtsi (excluding layer files).
   # Handles: "label: node {" and ZMK helper macros ZMK_TD_LAYER/ZMK_BEHAVIOR/ZMK_TAP_DANCE.
   defined=""
+
+  # For slicemk, exclude shared/magic.dtsi — it is NOT included in the
+  # slicemk keymap (RGB_STATUS is unsupported on the slicemk/zmk fork).
+  exclude_magic=""
+  [[ "$board" == "slicemk" ]] && exclude_magic="-not -name magic.dtsi"
+
   while IFS= read -r f; do
     defined+=$(perl -ne '
       print "$1\n" if /^\s*(\w+)\s*:\s*\w+\s*\{/;
@@ -602,7 +608,7 @@ for board in go60 glove80 slicemk; do
       print "$1\n" if /ZMK_TAP_DANCE\s*\(\s*(\w+)/;
     ' "$f" 2>/dev/null)$'\n'
   done < <(find "$REPO_ROOT/shared" "$board_dir" -name '*.dtsi' \
-             ! -path '*/layers/*' 2>/dev/null)
+             ! -path '*/layers/*' $exclude_magic 2>/dev/null)
 
   # Collect &label references from:
   #   - board layer files (keymap bindings)
@@ -621,7 +627,7 @@ for board in go60 glove80 slicemk; do
       print "$1\n" while /&([A-Za-z][A-Za-z0-9_]*)/g;
     ' "$f" 2>/dev/null)$'\n'
   done < <(find "$board_dir/layers" "$REPO_ROOT/shared/combos" "$REPO_ROOT/shared" \
-             -name '*.dtsi' 2>/dev/null)
+             -name '*.dtsi' $exclude_magic 2>/dev/null)
 
   # Report any reference that is neither a built-in nor user-defined
   undefined=()
@@ -774,6 +780,157 @@ while IFS= read -r -d '' combo_file; do
     pass "$rel — no cross-file DTS label conflicts with behavior/macro files"
   fi
 done < <(find "$REPO_ROOT/shared/combos" -name '*.dtsi' -print0)
+
+# ══════════════════════════════════════════════════════════════
+section "22. LAYER_* references in layer files are defined"
+# ══════════════════════════════════════════════════════════════
+# Every LAYER_* token used in board layer files must have a matching
+# #define in shared/layers.dtsi. Catches undefined preprocessor
+# constants that cause "parse error: expected number" DTS errors.
+
+# Collect all defined LAYER_* constants from shared/layers.dtsi
+defined_layers=$(grep -oE 'LAYER_[A-Za-z_]+' "$REPO_ROOT/shared/layers.dtsi" \
+  | sort -u)
+
+for board in go60 glove80 slicemk; do
+  board_dir="$REPO_ROOT/boards/$board"
+
+  # Collect all LAYER_* references from the board's layer files
+  used_layers=$(grep -hoE 'LAYER_[A-Za-z_]+' "$board_dir/layers/"*.dtsi 2>/dev/null \
+    | sort -u)
+
+  undefined=()
+  while IFS= read -r layer; do
+    [[ -z "$layer" ]] && continue
+    echo "$defined_layers" | grep -qx "$layer" || undefined+=("$layer")
+  done < <(echo "$used_layers")
+
+  if [[ ${#undefined[@]} -eq 0 ]]; then
+    pass "boards/$board — all LAYER_* references defined in shared/layers.dtsi"
+  else
+    fail "boards/$board — undefined LAYER_* constants: ${undefined[*]}"
+  fi
+done
+
+# ══════════════════════════════════════════════════════════════
+section "23. Cross-board layer definitions and references"
+# ══════════════════════════════════════════════════════════════
+# Go60 is the source of truth. Every layer file in go60/layers/
+# must exist in glove80/layers/ and slicemk/layers/. Each layer
+# file must declare the same LAYER_* node name across all boards.
+# Each board's layer files must reference the same set of LAYER_*
+# constants (so keymapsync.sh doesn't silently introduce undefined
+# references on target boards).
+
+SOURCE_BOARD=go60
+TARGET_BOARDS=(glove80 slicemk)
+source_dir="$REPO_ROOT/boards/$SOURCE_BOARD/layers"
+
+# ── 23a. Layer files present on all boards ────────────────────
+for layer_file in "$source_dir"/*.dtsi; do
+  fname=$(basename "$layer_file")
+  for target in "${TARGET_BOARDS[@]}"; do
+    target_file="$REPO_ROOT/boards/$target/layers/$fname"
+    if [[ -f "$target_file" ]]; then
+      pass "boards/$target/layers/$fname exists (matches $SOURCE_BOARD)"
+    else
+      fail "boards/$target/layers/$fname missing (exists in $SOURCE_BOARD)"
+    fi
+  done
+done
+
+# ── 23b. Layer node names match across boards ─────────────────
+# Each layer file should declare the same LAYER_Xxx node name.
+for layer_file in "$source_dir"/*.dtsi; do
+  fname=$(basename "$layer_file")
+  source_node=$(grep -oE 'LAYER_\w+\s*\{' "$layer_file" 2>/dev/null \
+    | head -1 | sed 's/\s*{//')
+  [[ -z "$source_node" ]] && continue
+  for target in "${TARGET_BOARDS[@]}"; do
+    target_file="$REPO_ROOT/boards/$target/layers/$fname"
+    [[ -f "$target_file" ]] || continue
+    target_node=$(grep -oE 'LAYER_\w+\s*\{' "$target_file" 2>/dev/null \
+      | head -1 | sed 's/\s*{//')
+    if [[ "$source_node" == "$target_node" ]]; then
+      pass "boards/$target/layers/$fname — node $source_node matches $SOURCE_BOARD"
+    else
+      fail "boards/$target/layers/$fname — node '$target_node' != '$source_node' in $SOURCE_BOARD"
+    fi
+  done
+done
+
+# ── 23c. Layer file DTS structure valid on all boards ─────────
+# Every layer file on every board must have valid DTS structure:
+#   - A LAYER_* node declaration  (LAYER_Xxx {)
+#   - A bindings block            (bindings = < ... >;)
+#   - Proper closing braces       (};)
+# This catches files that are empty, truncated, or have malformed syntax.
+for board in "$SOURCE_BOARD" "${TARGET_BOARDS[@]}"; do
+  board_dir="$REPO_ROOT/boards/$board/layers"
+  for layer_file in "$board_dir"/*.dtsi; do
+    fname=$(basename "$layer_file")
+    errors=()
+
+    # Check for LAYER_* node declaration
+    grep -qE 'LAYER_\w+\s*\{' "$layer_file" 2>/dev/null \
+      || errors+=("no LAYER_* node")
+
+    # Check for bindings block open
+    grep -q 'bindings = <' "$layer_file" 2>/dev/null \
+      || errors+=("no 'bindings = <'")
+
+    # Check for bindings block close
+    grep -q '>;\s*$' "$layer_file" 2>/dev/null \
+      || errors+=("no '>;' close")
+
+    # Check for node close
+    grep -q '};' "$layer_file" 2>/dev/null \
+      || errors+=("no '};' close")
+
+    # Verify brace balance (open { count == close } count)
+    open_count=$(grep -o '{' "$layer_file" 2>/dev/null | wc -l | tr -d ' ')
+    close_count=$(grep -o '}' "$layer_file" 2>/dev/null | wc -l | tr -d ' ')
+    [[ "$open_count" -eq "$close_count" ]] \
+      || errors+=("unbalanced braces: $open_count open vs $close_count close")
+
+    if [[ ${#errors[@]} -eq 0 ]]; then
+      pass "boards/$board/layers/$fname — valid DTS structure"
+    else
+      fail "boards/$board/layers/$fname — bad structure: ${errors[*]}"
+    fi
+  done
+done
+
+# ── 23d. LAYER_* references from go60 are present on target boards ──
+# Every LAYER_* constant used in a go60 layer file must also appear
+# in the corresponding target board file. Extra refs on the target
+# (from board-specific extra keys) are allowed. Missing refs indicate
+# keymapsync.sh dropped or replaced a layer reference incorrectly.
+# Exception: LAYER_Magic may be absent on slicemk (magic is excluded).
+for layer_file in "$source_dir"/*.dtsi; do
+  fname=$(basename "$layer_file")
+  source_refs=$(grep -oE 'LAYER_[A-Za-z_]+' "$layer_file" 2>/dev/null | sort -u)
+  for target in "${TARGET_BOARDS[@]}"; do
+    target_file="$REPO_ROOT/boards/$target/layers/$fname"
+    [[ -f "$target_file" ]] || continue
+    target_refs=$(grep -oE 'LAYER_[A-Za-z_]+' "$target_file" 2>/dev/null | sort -u)
+
+    # Find references in go60 not in target
+    missing=()
+    while IFS= read -r ref; do
+      [[ -z "$ref" ]] && continue
+      # LAYER_Magic is expected to be absent on slicemk
+      [[ "$target" == "slicemk" && "$ref" == "LAYER_Magic" ]] && continue
+      echo "$target_refs" | grep -qx "$ref" || missing+=("$ref")
+    done < <(echo "$source_refs")
+
+    if [[ ${#missing[@]} -eq 0 ]]; then
+      pass "boards/$target/layers/$fname — all go60 LAYER_* refs present"
+    else
+      fail "boards/$target/layers/$fname — missing go60 LAYER_* refs: ${missing[*]}"
+    fi
+  done
+done
 
 # ══════════════════════════════════════════════════════════════
 printf "\n${BOLD}══════════════════════════════════════════════${NC}\n"
