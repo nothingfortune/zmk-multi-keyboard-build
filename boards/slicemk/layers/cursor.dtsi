@@ -5,7 +5,7 @@
 			/* Row 0 */
 				&none
 			/* Row 1 */
-				&trans                                     &trans                                   &none                                &trans                                &mkp RCLK                                  &kp LG(PLUS)                                                               &mo LAYER_FN                    &mo LAYER_NORM                  &msc SCRL_UP                                 &trans                                &trans                                   &trans                                 &trans                                    &trans
+				&trans                                     &trans                                   &none                                &trans                                &mkp RCLK                                  &kp LG(PLUS)                                                               &trans                    &trans                  &msc SCRL_UP                                 &trans                                &trans                                   &trans                                 &trans                                    &trans
 			/* Row 2 */
 				&trans                                     &trans                                   &none                               &mmv MOVE_UP                             &mkp LCLK                                &kp LG(MINUS)                                                            &kp C_PLAY_PAUSE                &kp C_VOL_UP                    &msc SCRL_DOWN                                       &trans                               &mmv MOVE_UP                               &trans                                  &trans                                    &trans
 			/* Row 3 */

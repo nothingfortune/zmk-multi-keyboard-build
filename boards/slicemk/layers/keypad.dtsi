@@ -5,7 +5,7 @@
 			/* Row 0 */
 				&none
 			/* Row 1 */
-				&kp F1                                     &kp F2                                  &kp F3                                 &kp F4                                   &kp F5                                 &kp F6                                                                        &mo LAYER_FN                    &mo LAYER_NORM                  &kp F7                                &kp F8                                   &kp F9                                &kp F10                                 &kp F11                                 &kp F12
+				&kp F1                                     &kp F2                                  &kp F3                                 &kp F4                                   &kp F5                                 &kp F6                                                                        &trans                    &trans                  &kp F7                                &kp F8                                   &kp F9                                &kp F10                                 &kp F11                                 &kp F12
 			/* Row 2 */
 				&kp TAB                                  &kp STAR                                 &kp N7                                  &kp N8                                  &kp N9                                 &kp SLASH                                                                     &kp C_PLAY_PAUSE                &kp C_VOL_UP                    &kp SLASH                                       &kp N7                                   &kp N8                                &kp N9                                  &kp STAR                                 &trans
 			/* Row 3 */
