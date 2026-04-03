@@ -32,7 +32,7 @@
 /*                                                                                                                         |-------------------------------------| |-------------------------------------| |-------------------------------------| */
 /*                                                                                                                         |-------------------------------------| |-------------------------------------| |-------------------------------------| */
 /*                                                                                                                         │           NAV(hold)/SPACE           │ │                ENTER                │ │             NUMPAD(hold)/?          │ */
-                                                                                                                               &HRM_left_middy_v1B_TKZ LCTRL D         &HRM_left_index_v1B_TKZ LSHFT F          &SYM_left_index_v1B_TKZ LAYER_Symbol_lh G    
+                                                                                                                               &HRM_left_middy_v1B_TKZ LCTRL D         &HRM_left_index_v1B_TKZ LSHFT F          &HRMO_left_index_v1B_TKZ LAYER_Symbol_lh G    
 /*                                                                                                                         |-------------------------------------| |-------------------------------------| |-------------------------------------| */
     
     
@@ -40,7 +40,7 @@
 
                                         /* |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| */
                                         /* │                F6                   │ │                   F7                │ │                  F8                 │ │                 F9                  │ │                  F10                │ */
-                                                          &SYM_right_index_v1B_TKZ LAYER_Symbol_rh H                                     &HRM_right_index_v1B_TKZ RSHFT J                                &HRM_right_middy_v1B_TKZ RCTRL K                                  &HRM_right_ring_v1B_TKZ LALT L                                   &HRM_right_pinky_v1B_TKZ RGUI SEMI                  
+                                                          &HRMO_right_index_v1B_TKZ LAYER_Symbol_rh H                                     &HRM_right_index_v1B_TKZ RSHFT J                                &HRM_right_middy_v1B_TKZ RCTRL K                                  &HRM_right_ring_v1B_TKZ LALT L                                   &HRM_right_pinky_v1B_TKZ RGUI SEMI                  
 /* |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| */ 
 /* │                 6                   │ │                 7                   │ │                   8                 │ │                  9                  │ │                 0                   │ │                  -                  │ */
             &dqt_pair                         &magic LAYER_Magic 0                                &kp Z                                   &kp X                                 &kp C                                    &kp V            

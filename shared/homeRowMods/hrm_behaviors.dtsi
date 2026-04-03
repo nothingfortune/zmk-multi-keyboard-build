@@ -414,8 +414,8 @@
             hold-trigger-on-release;
         };
 
-        // SYM_left_index_bilateral -> &mo LAYER_Symbol_lh (right-hand triggered), tap for key - TailorKey
-        SYM_left_index_v1B_TKZ: SYM_left_index_v1B_TKZ {
+        // HRMO_left_index_bilateral -> &mo LAYER_Symbol_lh (right-hand triggered), tap for key - TailorKey
+        HRMO_left_index_v1B_TKZ: HRMO_left_index_v1B_TKZ {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
             tapping-term-ms = <HRM_INDEX_TAPPING_TERM>;
@@ -427,8 +427,8 @@
             hold-trigger-on-release;
         };
 
-        // SYM_right_index_bilateral -> &mo LAYER_Symbol_rh (left-hand triggered), tap for key - TailorKey
-        SYM_right_index_v1B_TKZ: SYM_right_index_v1B_TKZ {
+        // HRMO_right_index_bilateral -> &mo LAYER_Symbol_rh (left-hand triggered), tap for key - TailorKey
+        HRMO_right_index_v1B_TKZ: HRMO_right_index_v1B_TKZ {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
             tapping-term-ms = <HRM_INDEX_TAPPING_TERM>;
