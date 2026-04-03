@@ -1,6 +1,7 @@
 name: Build ZMK Firmware (all boards)
 
-# Builds firmware for all 3 keyboards in parallel on every commit to main.
+# Syncs go60 layer changes to the other boards, validates the synced tree,
+# then builds firmware for all 3 keyboards on every commit to main.
 # Artifacts are uploaded for each board and available for download on the
 # Actions run page for ~90 days.
 
@@ -11,12 +12,35 @@ on:
   workflow_dispatch:
 
 jobs:
-  # Validation (runs first; build jobs depend on it)
-  validate:
-    name: Validate config
+  # Sync go60 -> glove80/slicemk and publish the synced tree for downstream jobs.
+  sync-keymaps:
+    name: Sync keymaps
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Run keymap sync script
+        run: bash scripts/keymapsync.sh
+
+      - name: Upload synced workspace
+        uses: actions/upload-artifact@v4
+        with:
+          name: synced-workspace
+          path: .
+          retention-days: 1
+
+  # Validation runs against the synced workspace and gates all builds.
+  validate:
+    name: Validate config
+    needs: sync-keymaps
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download synced workspace
+        uses: actions/download-artifact@v4
+        with:
+          name: synced-workspace
+          path: .
+
       - name: Run validation script
         run: bash scripts/validation.sh
 
@@ -26,7 +50,11 @@ jobs:
     needs: validate
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Download synced workspace
+        uses: actions/download-artifact@v4
+        with:
+          name: synced-workspace
+          path: .
 
       - name: Checkout moergo-sc/zmk
         uses: actions/checkout@v4
@@ -60,7 +88,11 @@ jobs:
     needs: validate
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Download synced workspace
+        uses: actions/download-artifact@v4
+        with:
+          name: synced-workspace
+          path: .
 
       - name: Checkout moergo-sc/zmk
         uses: actions/checkout@v4
@@ -89,9 +121,58 @@ jobs:
           retention-days: 90
 
   # SliceMK (west)
-  
-  
   build-slicemk:
     name: Build SliceMK ErgoDox
     needs: validate
-    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@v0.3
+    runs-on: ubuntu-latest
+    container:
+      image: zmkfirmware/zmk-build-arm:stable
+    env:
+      BUILD_DIR: .ci-build/slicemk
+    steps:
+      - name: Download synced workspace
+        uses: actions/download-artifact@v4
+        with:
+          name: synced-workspace
+          path: .
+
+      - name: Create build directory
+        run: mkdir -p "$BUILD_DIR"
+
+      - name: Cache west modules
+        uses: actions/cache@v4
+        continue-on-error: true
+        with:
+          path: |
+            modules/
+            tools/
+            zephyr/
+            bootloader/
+            zmk/
+          key: ${{ runner.os }}-slicemk-west-${{ hashFiles('config/west.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-slicemk-west-
+            ${{ runner.os }}-
+
+      - name: West init
+        run: west init -l config
+
+      - name: West update
+        run: west update --fetch-opt=--filter=tree:0
+
+      - name: West zephyr export
+        run: west zephyr-export
+
+      - name: Build SliceMK firmware
+        run: >-
+          west build -s zmk/app -d "$BUILD_DIR"
+          -b slicemk_ergodox_202207_green_left --
+          -DZMK_CONFIG="$GITHUB_WORKSPACE/config"
+          -DSHIELD="slicemk_ergodox_leftcentral"
+
+      - name: Upload SliceMK firmware
+        uses: actions/upload-artifact@v4
+        with:
+          name: slicemk-firmware
+          path: .ci-build/slicemk/zephyr/zmk.uf2
+          retention-days: 90

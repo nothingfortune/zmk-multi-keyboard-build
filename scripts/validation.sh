@@ -336,6 +336,10 @@ section "10. GitHub Actions workflow"
 
 workflow="$REPO_ROOT/.github/workflows/build.yml"
 
+grep -q 'scripts/keymapsync.sh' "$workflow" 2>/dev/null \
+  && pass ".github/workflows/build.yml — keymap sync step present" \
+  || fail ".github/workflows/build.yml — keymap sync step missing"
+
 grep -q 'build/go60.nix' "$workflow" 2>/dev/null \
   && pass ".github/workflows/build.yml — Go60 Nix build present" \
   || fail ".github/workflows/build.yml — Go60 Nix build missing"
@@ -344,9 +348,13 @@ grep -q 'build/glove80.nix' "$workflow" 2>/dev/null \
   && pass ".github/workflows/build.yml — Glove80 Nix build present" \
   || fail ".github/workflows/build.yml — Glove80 Nix build missing"
 
-grep -q 'build-user-config.yml' "$workflow" 2>/dev/null \
-  && pass ".github/workflows/build.yml — SliceMK reusable workflow present" \
-  || fail ".github/workflows/build.yml — SliceMK reusable workflow missing"
+grep -q 'slicemk_ergodox_202207_green_left' "$workflow" 2>/dev/null \
+  && pass ".github/workflows/build.yml — SliceMK west build present" \
+  || fail ".github/workflows/build.yml — SliceMK west build missing"
+
+grep -q 'synced-workspace' "$workflow" 2>/dev/null \
+  && pass ".github/workflows/build.yml — synced workspace artifact flow present" \
+  || fail ".github/workflows/build.yml — synced workspace artifact flow missing"
 
 grep -q 'moergo-glove80-zmk-dev' "$workflow" 2>/dev/null \
   && pass ".github/workflows/build.yml — MoErgo Cachix cache configured" \
