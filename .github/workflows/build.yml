@@ -11,22 +11,26 @@ on:
   pull_request:
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 jobs:
   # Sync go60 -> glove80/slicemk and publish the synced tree for downstream jobs.
   sync-keymaps:
     name: Sync keymaps
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Run keymap sync script
         run: bash scripts/keymapsync.sh
 
       - name: Upload synced workspace
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: synced-workspace
           path: .
+          include-hidden-files: true
           retention-days: 1
 
   # Validation runs against the synced workspace and gates all builds.
@@ -36,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download synced workspace
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: synced-workspace
           path: .
@@ -51,13 +55,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download synced workspace
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: synced-workspace
           path: .
 
       - name: Checkout moergo-sc/zmk
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: moergo-sc/zmk
           ref: main
@@ -76,7 +80,7 @@ jobs:
         run: nix-build build/go60.nix --arg firmware 'import ./src {}' -o result-go60
 
       - name: Upload Go60 firmware
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: go60-firmware
           path: result-go60/go60.uf2
@@ -89,13 +93,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download synced workspace
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: synced-workspace
           path: .
 
       - name: Checkout moergo-sc/zmk
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: moergo-sc/zmk
           ref: main
@@ -114,7 +118,7 @@ jobs:
         run: nix-build build/glove80.nix --arg firmware 'import ./src {}' -o result-glove80
 
       - name: Upload Glove80 firmware
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: glove80-firmware
           path: result-glove80/glove80.uf2
@@ -131,7 +135,7 @@ jobs:
       BUILD_DIR: .ci-build/slicemk
     steps:
       - name: Download synced workspace
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: synced-workspace
           path: .
@@ -171,7 +175,7 @@ jobs:
           -DSHIELD="slicemk_ergodox_leftcentral"
 
       - name: Upload SliceMK firmware
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: slicemk-firmware
           path: .ci-build/slicemk/zephyr/zmk.uf2
