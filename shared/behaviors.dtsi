@@ -78,5 +78,5 @@ lshft_cw_td: lshft_caps_word_tap_dance {
     compatible = "zmk,behavior-tap-dance";
     #binding-cells = <0>;
     tapping-term-ms = <TD_TAPPING_TERM>;
-    bindings = <&cw> , <&kp LSHFT>;
+    bindings = <&kp LSHFT>, <&cw> ;
 };
