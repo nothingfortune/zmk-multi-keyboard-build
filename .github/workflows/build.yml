@@ -26,7 +26,7 @@ jobs:
         run: bash scripts/keymapsync.sh
 
       - name: Upload synced workspace
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: synced-workspace
           path: .
@@ -80,7 +80,7 @@ jobs:
         run: nix-build build/go60.nix --arg firmware 'import ./src {}' -o result-go60
 
       - name: Upload Go60 firmware
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: go60-firmware
           path: result-go60/go60.uf2
@@ -118,7 +118,7 @@ jobs:
         run: nix-build build/glove80.nix --arg firmware 'import ./src {}' -o result-glove80
 
       - name: Upload Glove80 firmware
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: glove80-firmware
           path: result-glove80/glove80.uf2
@@ -175,7 +175,7 @@ jobs:
           -DSHIELD="slicemk_ergodox_leftcentral"
 
       - name: Upload SliceMK firmware
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: slicemk-firmware
           path: .ci-build/slicemk/zephyr/zmk.uf2
