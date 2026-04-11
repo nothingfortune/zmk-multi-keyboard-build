@@ -284,6 +284,7 @@ sync_layer() {
   local go_file="$1"
   local tgt_file="$2"
   local -n _fwd="$3"   # associative: go60_idx -> target_idx
+  local target_board="${4:-}"
   local name
   name=$(basename "$go_file")
 
@@ -309,7 +310,15 @@ sync_layer() {
     local dst="${_fwd[$src]}"
     if (( src < ${#go_b[@]} && dst < ${#tgt_b[@]} )); then
       local gw="${go_sw[$src]:-0}"
-      tgt_enc[$dst]="${gw}:${go_b[$src]}"
+      local mapped_binding="${go_b[$src]}"
+
+      # SliceMK intentionally excludes magic.dtsi (RGB_STATUS unsupported),
+      # so never sync Go60's magic behavior into slicemk layer bindings.
+      if [[ "$target_board" == "slicemk" && "$mapped_binding" == "&magic"* ]]; then
+        mapped_binding="&none"
+      fi
+
+      tgt_enc[$dst]="${gw}:${mapped_binding}"
       n=$(( n + 1 ))
     fi
   done
@@ -326,13 +335,13 @@ load_map "$TRANS_DIR/go60_to_slicemk.map" fwd_slicemk
 
 echo "==> go60 → glove80"
 for f in "$GO60_DIR"/*.dtsi; do
-  sync_layer "$f" "$GLOVE80_DIR/$(basename "$f")" fwd_glove80
+  sync_layer "$f" "$GLOVE80_DIR/$(basename "$f")" fwd_glove80 glove80
 done
 
 echo
 echo "==> go60 → slicemk"
 for f in "$GO60_DIR"/*.dtsi; do
-  sync_layer "$f" "$SLICEMK_DIR/$(basename "$f")" fwd_slicemk
+  sync_layer "$f" "$SLICEMK_DIR/$(basename "$f")" fwd_slicemk slicemk
 done
 
 echo

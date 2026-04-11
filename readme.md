@@ -14,6 +14,13 @@ Shared ZMK firmware configuration for three keyboards, built automatically on ev
 
 ---
 
+## Recent fixes
+
+- 2026-04-11: SliceMK validation failure caused by synced `&magic` bindings was resolved by adding a SliceMK-specific rewrite in sync logic (`&magic` → `&none`).
+- RCA: [docs/rca-slicemk-magic-validation-failure-2026-04-11.md](docs/rca-slicemk-magic-validation-failure-2026-04-11.md)
+
+---
+
 ## How it works
 
 ### Repository layout
@@ -73,8 +80,10 @@ zmk-multi-keyboard-build/
 │   └── validation.sh               # Structural validation (run by CI before builds)
 │
 ├── docs/
-│   ├── positionmapping.md          # Cross-board position name ↔ physical index reference
-│   └── zmk-sync-architecture.md   # Architecture overview
+│   ├── keyPositionMapping.md       # Cross-board position name ↔ physical index reference
+│   ├── zmk-sync-architectureplanning.md
+│   ├── bt-profile-os-mode-planning.md
+│   └── rca-slicemk-magic-validation-failure-2026-04-11.md
 │
 ├── build.yaml                      # SliceMK board/shield matrix for west build
 └── .github/workflows/build.yml     # CI: validates, then builds all 3 boards in parallel
@@ -97,7 +106,7 @@ zmk-multi-keyboard-build/
 | 19 | Symbol_lh | `layers/symbol_lh.dtsi` |
 | 20 | Symbol_rh | `layers/symbol_rh.dtsi` |
 
-> SliceMK excludes the Magic layer (RGB_STATUS is unsupported in the `slicemk/zmk` fork), so it has 20 active layers.
+> SliceMK excludes shared magic includes (RGB_STATUS is unsupported in the `slicemk/zmk` fork), so it has 20 active layers.
 
 ### Key position naming
 
@@ -108,7 +117,7 @@ Positions use logical names so combos and HRM behaviors compile correctly across
 - `POS_LH_T1/T2/T3` — left thumb cluster
 - `POS_RH_T1/T2/T3` — right thumb cluster
 
-Each board's `positions.dtsi` maps these names to its physical key numbers. See `docs/positionmapping.md` for the full cross-board reference table.
+Each board's `positions.dtsi` maps these names to its physical key numbers. See `docs/keyPositionMapping.md` for the full cross-board reference table.
 
 ---
 
@@ -164,6 +173,8 @@ Edit layers in `boards/go60/layers/`, then run:
 ```
 
 This reads the translation maps in `boards/translations/` and propagates every go60 binding to the matching position on glove80 and slicemk. Positions that only exist on the target board (glove80 function row, slicemk inner columns, extra thumb keys) are left untouched.
+
+For SliceMK, synced references to `&magic` are intentionally rewritten to `&none` during sync. This prevents undefined label errors because SliceMK intentionally does not include `shared/magic.dtsi`.
 
 After syncing, review the diffs and commit all three boards together.
 
@@ -230,6 +241,18 @@ Edit `boards/go60/board_meta.dtsi`. Glove80 and SliceMK stubs are in their respe
 ```
 
 Runs 18 structural checks: required files, layer counts, binding counts per board, combo wrapper placement, include ordering, duplicate DTS labels, undefined `&label` references, and more. Also runs automatically in CI as the first job before any firmware build.
+
+Current script scope is 23 checks covering file/layout invariants, DTS structure, cross-board layer/reference consistency, behavior schema constraints, and undefined `&label` detection.
+
+### SliceMK and Magic layer behavior
+
+SliceMK must not include `shared/magic.dtsi` (RGB_STATUS is unsupported in the `slicemk/zmk` fork).
+
+To keep shared layers in sync without breaking SliceMK:
+
+- go60 remains source of truth and may use `&magic` in layer bindings.
+- `scripts/keymapsync.sh` rewrites synced `&magic ...` bindings to `&none` only for SliceMK targets.
+- `scripts/validation.sh` checks both constraints: no SliceMK magic includes, and no undefined `&magic` references.
 
 ---
 

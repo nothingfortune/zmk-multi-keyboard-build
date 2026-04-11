@@ -83,7 +83,7 @@ POS_LH_T1    →  left thumb 1 (center)
 POS_RH_T1    →  right thumb 1 (center)
 ```
 
-Each board's `positions.dtsi` maps these to its own physical key numbers. See `docs/positionmapping.md` for the full table.
+Each board's `positions.dtsi` maps these to its own physical key numbers. See `docs/keyPositionMapping.md` for the full table.
 
 ---
 
@@ -152,7 +152,7 @@ code boards/slicemk/layers/base.dtsi
 bash scripts/validation.sh
 ```
 
-Runs 21 structural checks — binding counts, include ordering, undefined labels, and more. If something is wrong this will tell you exactly what before it hits the compiler.
+Runs 23 structural checks — binding counts, include ordering, undefined labels, and more. If something is wrong this will tell you exactly what before it hits the compiler.
 
 ### 5. Commit and push
 
@@ -272,7 +272,7 @@ mkdir -p boards/<board>/layers
 
 ### 2. Write `positions.dtsi`
 
-Map every physical key on the new board to the same logical `POS_*` names used by go60. Open `docs/positionmapping.md` and `boards/go60/positions.dtsi` side by side — the logical names are your guide.
+Map every physical key on the new board to the same logical `POS_*` names used by go60. Open `docs/keyPositionMapping.md` and `boards/go60/positions.dtsi` side by side — the logical names are your guide.
 
 ```c
 // boards/<board>/positions.dtsi
@@ -336,7 +336,7 @@ Create `boards/translations/go60_to_<board>.map`. For each of the 60 shared logi
 ...
 ```
 
-Use `docs/positionmapping.md` and your new `positions.dtsi` to build this map. The file must have exactly 60 entries.
+Use `docs/keyPositionMapping.md` and your new `positions.dtsi` to build this map. The file must have exactly 60 entries.
 
 ### 8. Add the board to `keymapsync.sh`
 
@@ -374,7 +374,7 @@ Add the new board to each relevant check:
 
 **west build** (if using a standard west-compatible fork):
 - Add the board to `build.yaml`
-- The existing GitHub Actions workflow (`build-user-config.yml`) will pick it up
+- The existing GitHub Actions workflow (`build.yml`) will pick it up
 
 ### 11. Validate and sync
 
@@ -388,6 +388,6 @@ bash scripts/validation.sh   # confirm clean
 
 ## Next steps
 
-- `docs/zmk-sync-architecture.md` — deep dive into how the sync system works
-- `docs/positionmapping.md` — full cross-board position number reference table
+- `docs/zmk-sync-architectureplanning.md` — deep dive into how the sync system works
+- `docs/keyPositionMapping.md` — full cross-board position number reference table
 - [ZMK documentation](https://zmk.dev/docs) — ZMK behaviors, combos, macros reference
