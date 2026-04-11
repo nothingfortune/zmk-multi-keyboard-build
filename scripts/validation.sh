@@ -941,6 +941,171 @@ for layer_file in "$source_dir"/*.dtsi; do
 done
 
 # ══════════════════════════════════════════════════════════════
+section "24. Binding arity and kp keycode sanity"
+# ══════════════════════════════════════════════════════════════
+# Validate that:
+#   1) Every custom behavior/macro invocation uses the expected number of
+#      binding arguments based on its #binding-cells definition.
+#   2) &kp always has exactly one argument and does not use known invalid
+#      shorthand aliases like ENT (use RET instead).
+
+# Build expected arity map from labeled nodes that define #binding-cells.
+declare -A BINDING_CELLS
+while IFS='|' read -r label cells; do
+  [[ -z "$label" || -z "$cells" ]] && continue
+  BINDING_CELLS["$label"]="$cells"
+done < <(
+  perl -0777 -ne '
+    s|/\*.*?\*/||gs;
+    while (/\b([A-Za-z_][A-Za-z0-9_]*)\s*:\s*[A-Za-z_][A-Za-z0-9_]*\s*\{(.*?)\};/gs) {
+      my ($label, $body) = ($1, $2);
+      next unless $body =~ /#binding-cells\s*=\s*<\s*([0-9]+)\s*>/;
+      print "$label|$1\n";
+    }
+  ' \
+  "$REPO_ROOT/shared"/*.dtsi \
+  "$REPO_ROOT/shared/homeRowMods"/*.dtsi \
+  "$REPO_ROOT/boards/go60"/*.dtsi \
+  "$REPO_ROOT/boards/glove80"/*.dtsi \
+  "$REPO_ROOT/boards/slicemk"/*.dtsi \
+  2>/dev/null | sort -u
+)
+
+arity_errors=()
+builtin_errors=()
+kp_errors=()
+
+# Common built-in behavior arity expectations.
+declare -A BUILTIN_CELLS=(
+  [none]=0
+  [trans]=0
+  [bootloader]=0
+  [reset]=0
+  [sys_reset]=0
+  [caps_word]=0
+  [key_repeat]=0
+  [mo]=1
+  [to]=1
+  [bt]=1
+  [out]=1
+  [rgb_ug]=1
+  [lt]=2
+  [mt]=2
+)
+
+while IFS='|' read -r f line label argc first_arg raw; do
+  [[ -z "$label" ]] && continue
+
+  # Validate custom behavior/macro arity where #binding-cells is defined.
+  if [[ -n "${BINDING_CELLS[$label]:-}" ]]; then
+    expected="${BINDING_CELLS[$label]}"
+    if [[ "$argc" -ne "$expected" ]]; then
+      arity_errors+=("$f:$line &$label expects $expected args, got $argc ($raw)")
+    fi
+  elif [[ -n "${BUILTIN_CELLS[$label]:-}" ]]; then
+    expected="${BUILTIN_CELLS[$label]}"
+    if [[ "$argc" -ne "$expected" ]]; then
+      builtin_errors+=("$f:$line &$label expects $expected args, got $argc ($raw)")
+    fi
+  fi
+
+  # Validate &kp usage.
+  if [[ "$label" == "kp" ]]; then
+    if [[ "$argc" -ne 1 ]]; then
+      kp_errors+=("$f:$line &kp expects 1 arg, got $argc ($raw)")
+      continue
+    fi
+    # Known invalid shorthand that causes DTS parse errors in this repo/toolchain.
+    if [[ "$first_arg" == "ENT" ]]; then
+      kp_errors+=("$f:$line invalid keycode 'ENT' in &kp (use RET)")
+    fi
+  fi
+done < <(
+  find \
+    "$REPO_ROOT/boards/go60/layers" \
+    "$REPO_ROOT/boards/glove80/layers" \
+    "$REPO_ROOT/boards/slicemk/layers" \
+    "$REPO_ROOT/shared/combos" \
+    -name '*.dtsi' -type f 2>/dev/null
+
+  printf '%s\n' \
+    "$REPO_ROOT/shared/macros.dtsi" \
+    "$REPO_ROOT/shared/homeRowMods/hrm_macros.dtsi" \
+  | while IFS= read -r f; do
+      [[ -f "$f" ]] || continue
+      perl -0777 -ne '
+        my $file = $ARGV;
+        my $text = $_;
+        $text =~ s|/\*.*?\*/||gs;
+        $text =~ s|//[^\n]*||g;
+        while ($text =~ /bindings\s*=\s*<(.*?)>;/gs) {
+          my $block = $1;
+          my @lines = split /\n/, $block;
+          my @tokens;
+          my @tok_lines;
+          my $line_no = 0;
+          for my $ln (@lines) {
+            $line_no++;
+            while ($ln =~ /([A-Za-z_][A-Za-z0-9_]*\([^\)]*\)|&[A-Za-z_][A-Za-z0-9_]*|[A-Za-z_][A-Za-z0-9_]*)/g) {
+              push @tokens, $1;
+              push @tok_lines, $line_no;
+            }
+          }
+
+          my $i = 0;
+          while ($i <= $#tokens) {
+            my $t = $tokens[$i];
+            if ($t =~ /^&([A-Za-z_][A-Za-z0-9_]*)$/) {
+              my $label = $1;
+              my $start_line = $tok_lines[$i];
+              my @args;
+              my $j = $i + 1;
+              while ($j <= $#tokens && $tokens[$j] !~ /^&/) {
+                push @args, $tokens[$j];
+                $j++;
+              }
+              my $argc = scalar(@args);
+              my $first = $argc ? $args[0] : "";
+              my $raw = join(" ", "&$label", @args);
+              print "$file|$start_line|$label|$argc|$first|$raw\n";
+              $i = $j;
+            } else {
+              $i++;
+            }
+          }
+        }
+      ' "$f"
+    done
+)
+
+if [[ ${#arity_errors[@]} -eq 0 ]]; then
+  pass "custom behaviors/macros — all invocations match #binding-cells arity"
+else
+  fail "custom behaviors/macros — arity mismatches found"
+  for e in "${arity_errors[@]}"; do
+    printf "      %s\n" "$e"
+  done
+fi
+
+if [[ ${#builtin_errors[@]} -eq 0 ]]; then
+  pass "common built-ins — invocation arity checks passed"
+else
+  fail "common built-ins — arity mismatches found"
+  for e in "${builtin_errors[@]}"; do
+    printf "      %s\n" "$e"
+  done
+fi
+
+if [[ ${#kp_errors[@]} -eq 0 ]]; then
+  pass "&kp bindings — arity and keycode sanity checks passed"
+else
+  fail "&kp bindings — invalid usages found"
+  for e in "${kp_errors[@]}"; do
+    printf "      %s\n" "$e"
+  done
+fi
+
+# ══════════════════════════════════════════════════════════════
 printf "\n${BOLD}══════════════════════════════════════════════${NC}\n"
 printf "  ${GREEN}PASS: %-4d${NC}  ${RED}FAIL: %-4d${NC}  ${YELLOW}WARN: %-4d${NC}\n" \
        "$PASS" "$FAIL" "$WARN"
