@@ -2,6 +2,20 @@
 
 Shared ZMK firmware configuration for three keyboards, built automatically on every commit to `main`.
 
+This file is the repo overview and reference.
+
+If you are new here, start with [START-HERE.md](START-HERE.md), not this file.
+
+If you only want the normal edit workflow, go straight to [getting-started.md](getting-started.md).
+
+## Doc map
+
+- [START-HERE.md](START-HERE.md): the shortest route into the repo
+- [getting-started.md](getting-started.md): first normal change, sync, validate, and firmware download
+- [docs/add-new-keyboard-layout.md](docs/add-new-keyboard-layout.md): add a completely new board
+- [docs/ci-cd-pipeline.md](docs/ci-cd-pipeline.md): GitHub Actions and artifact flow
+- [docs/repo-assessment.md](docs/repo-assessment.md): architecture and documentation review
+
 ---
 
 ## Supported keyboards
@@ -80,7 +94,10 @@ zmk-multi-keyboard-build/
 │   └── validation.sh               # Structural validation (run by CI before builds)
 │
 ├── docs/
+│   ├── add-new-keyboard-layout.md  # Deep guide for integrating a new board
+│   ├── ci-cd-pipeline.md           # Detailed GitHub Actions pipeline guide
 │   ├── keyPositionMapping.md       # Cross-board position name ↔ physical index reference
+│   ├── repo-assessment.md          # Architecture and documentation assessment
 │   ├── zmk-sync-architectureplanning.md
 │   ├── bt-profile-os-mode-planning.md
 │   └── rca-slicemk-magic-validation-failure-2026-04-11.md
@@ -146,7 +163,20 @@ nix-build build/glove80.nix --arg firmware 'import ./src {}' -o result-glove80
 
 ### Manual — SliceMK (west)
 
-SliceMK uses a standard west-based build. See the [slicemk/zmk](https://github.com/slicemk/zmk) repo for local build instructions, or trigger a build via the GitHub Actions `workflow_dispatch` button.
+Run from the repo root:
+
+```sh
+west init -l config
+west update --fetch-opt=--filter=tree:0
+west zephyr-export
+west build -s zmk/app -d .local-build/slicemk \
+	-b slicemk_ergodox_202207_green_left -- \
+	-DZMK_CONFIG="$PWD/config" \
+	-DSHIELD="slicemk_ergodox_leftcentral"
+# Output: .local-build/slicemk/zephyr/zmk.uf2
+```
+
+This matches the CI build flow in `.github/workflows/build.yml`.
 
 ---
 
@@ -240,9 +270,7 @@ Edit `boards/go60/board_meta.dtsi`. Glove80 and SliceMK stubs are in their respe
 ./scripts/validation.sh
 ```
 
-Runs 18 structural checks: required files, layer counts, binding counts per board, combo wrapper placement, include ordering, duplicate DTS labels, undefined `&label` references, and more. Also runs automatically in CI as the first job before any firmware build.
-
-Current script scope is 23 checks covering file/layout invariants, DTS structure, cross-board layer/reference consistency, behavior schema constraints, and undefined `&label` detection.
+It covers repo structure and DTS sanity checks including required files, layer counts, binding counts per board, combo wrapper placement, include ordering, duplicate DTS labels, cross-board layer/reference consistency, behavior schema constraints, and undefined `&label` detection. It also runs automatically in CI as the first job before any firmware build.
 
 ### SliceMK and Magic layer behavior
 
@@ -269,6 +297,8 @@ Maps live in `boards/translations/` as `src_idx dst_idx` pairs (one per line, `#
 ```
 
 Each map covers the 60 positions that go60 and the target board share. To update a map, match logical position names between `boards/go60/positions.dtsi` and the target board's `positions.dtsi`.
+
+To add a net-new keyboard layout or board, follow [getting-started.md#adding-a-new-keyboard-layout](getting-started.md#adding-a-new-keyboard-layout).
 
 ---
 

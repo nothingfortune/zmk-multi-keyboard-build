@@ -1,6 +1,32 @@
 # Getting Started
 
-This guide is for people new to this repo. It covers the mental model, the edit workflow, and how to get firmware onto a keyboard.
+This guide is for your first normal change in this repo.
+
+Use it when you want to understand the basic model, make a safe change, sync it, validate it, and get firmware.
+
+Do not start here if you are adding a brand-new board. Use [docs/add-new-keyboard-layout.md](docs/add-new-keyboard-layout.md) for that.
+
+If you want the repo map or deeper reference details, use [readme.md](readme.md).
+
+## Quick version
+
+If you already understand the basic idea and just want the usual workflow, this is it:
+
+```sh
+# Edit the shared layer in Go60
+code boards/go60/layers/base.dtsi
+
+# Sync Go60 into the other boards
+bash scripts/keymapsync.sh
+
+# Validate the synced tree
+bash scripts/validation.sh
+
+# Review and commit
+git status
+```
+
+That is the normal loop for most changes in this repo.
 
 ---
 
@@ -14,9 +40,9 @@ A shared ZMK firmware configuration for three split keyboards:
 | **Glove80** | 80 | moergo-sc/zmk |
 | **SliceMK ErgoDox Lite** | 77 | slicemk/zmk |
 
-All three share one keymap library. **Go60 is the source of truth** — you edit layers there, then run a script that propagates the changes to the other two boards automatically.
+All three share one keymap library. **Go60 is the source of truth**. You edit layers there, then run a script that copies the shared changes to the other two boards.
 
-You do not need all three keyboards. If you only have a Glove80, you still edit go60 first, then sync.
+You do not need all three keyboards. If you only use a Glove80, you still edit Go60 first, then sync.
 
 ---
 
@@ -31,6 +57,10 @@ To build firmware locally you also need:
 - **west** for SliceMK (or push to `main`)
 
 Most people just push to `main` and download artifacts from GitHub Actions. Local builds are optional.
+
+If you want the exact CI job flow and artifact handoff, see [docs/ci-cd-pipeline.md](docs/ci-cd-pipeline.md).
+
+If you are not sure which doc to use first, go back to [START-HERE.md](START-HERE.md).
 
 ---
 
@@ -54,7 +84,7 @@ boards/go60/layers/base.dtsi    ← edit this
          └─── boards/slicemk/layers/base.dtsi   ← keymapsync.sh writes this
 ```
 
-Each board has the same 21 layer files, but with different key counts per row (60 / 80 / 77). The sync script translates binding positions using maps in `boards/translations/`.
+Each board has the same 21 logical layers, but the physical key counts are different: 60, 80, and 77. The sync script uses translation maps in `boards/translations/` to place the shared Go60 bindings onto the matching positions on each target board.
 
 ### Shared vs board-specific
 
@@ -109,7 +139,9 @@ Each board's `positions.dtsi` maps these to its own physical key numbers. See `d
 
 ## Editing a keymap
 
-### 1. Open the go60 layer file
+This is the normal edit loop. For most changes, you do not need anything more complex than these five steps.
+
+### 1. Open the Go60 layer file
 
 ```sh
 # Example: change something on the base layer
@@ -134,7 +166,7 @@ Common bindings:
 bash scripts/keymapsync.sh
 ```
 
-This reads `boards/translations/go60_to_glove80.map` and `go60_to_slicemk.map` and rewrites the matching positions in all 21 layer files on each board. Board-specific positions (Glove80's function row, SliceMK's inner columns) are left untouched.
+This reads `boards/translations/go60_to_glove80.map` and `go60_to_slicemk.map` and rewrites only the matching shared positions in all 21 layer files on each board. Board-specific positions like the Glove80 function row or SliceMK inner columns are left alone.
 
 ### 3. Edit board-specific positions if needed
 
@@ -152,7 +184,7 @@ code boards/slicemk/layers/base.dtsi
 bash scripts/validation.sh
 ```
 
-Runs 23 structural checks — binding counts, include ordering, undefined labels, and more. If something is wrong this will tell you exactly what before it hits the compiler.
+Runs the repo structure and DTS sanity checks — binding counts, include ordering, undefined labels, and more. If something is wrong this will tell you exactly what before it hits the compiler.
 
 ### 5. Commit and push
 
@@ -162,7 +194,7 @@ git commit -m "Update base layer: ..."
 git push
 ```
 
-GitHub Actions picks it up, validates, and builds all three boards in parallel. Firmware artifacts appear on the [Actions](../../actions) page within a few minutes.
+GitHub Actions picks it up, runs sync, validates the synced tree, and builds all three boards. Firmware artifacts usually show up on the [Actions](../../actions) page within a few minutes.
 
 ---
 
@@ -260,7 +292,11 @@ jk_combo: jk_combo {
 
 ---
 
-## Adding a net-new board
+## Adding a new keyboard layout
+
+This repo treats a new keyboard layout as a net-new board integration that plugs into the same shared layer library and sync workflow.
+
+For the exact integration order and the maintenance rules for non-Go60 keys, read [docs/add-new-keyboard-layout.md](docs/add-new-keyboard-layout.md).
 
 To bring a fourth (or fifth) keyboard into the repo:
 

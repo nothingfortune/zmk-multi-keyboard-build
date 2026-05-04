@@ -1,5 +1,11 @@
 # ZMK Multi-Keyboard Sync Architecture
 
+This is an architecture and planning note.
+
+It is useful for understanding the design, but it is not the source of truth for the current repo state, current counts, or the current CI workflow.
+
+If you are new here, use [../START-HERE.md](../START-HERE.md), [../getting-started.md](../getting-started.md), and [../readme.md](../readme.md) first.
+
 ## Goal
 
 Maintain a single repo that drives the keymaps for Go60, Glove80, and SliceMK. Update behaviors, macros, layers, and HRM config in one place; per-board keymaps pull from the shared library and only define what's physically unique to each board. **Go60 is the source of truth for layer bindings.**

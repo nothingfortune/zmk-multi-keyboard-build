@@ -1,0 +1,27 @@
+# macOS and editor noise
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Local assistant metadata
+.claude/
+claude.md
+
+# Local ZMK checkouts and west workspace state
+src/
+.west/
+modules/
+tools/
+zephyr/
+bootloader/
+zmk/
+
+# Local build outputs
+.ci-build/
+result
+result-*
+*.uf2
+*.bin
+*.hex

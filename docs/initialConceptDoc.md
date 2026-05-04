@@ -1,5 +1,11 @@
 # Shared Behaviors & Macros — How They Work
 
+This is an older design and explanation note.
+
+It is useful background, but it is not the first doc a new contributor should read.
+
+For the current workflow and file map, start with [../START-HERE.md](../START-HERE.md), [../getting-started.md](../getting-started.md), and [../readme.md](../readme.md).
+
 All shared ZMK behaviors, macros, mod-morphs, and HRM configs live in the `shared/` directory at the root of this repo. Every board keymap includes them via relative paths. There is no separate external module — everything is self-contained.
 
 ---
