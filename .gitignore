@@ -5,9 +5,8 @@
 *.swp
 *.swo
 
-# Local assistant metadata
+# Local tool metadata
 .claude/
-claude.md
 
 # Local ZMK checkouts and west workspace state
 src/
