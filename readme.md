@@ -328,3 +328,12 @@ Update `build.yaml` and `config/slicemk_ergodox_leftcentral.conf` if your board 
 **Macros** are ordered sequences of actions (key presses, behaviors) that execute when triggered.
 
 **Home Row Mods (HRM)** use hold-tap behaviors on home-row keys so each key sends a letter on tap and a modifier on hold. This repo uses bilateral positional HRM — the hold only fires when the opposite hand or a thumb key is pressed simultaneously.
+
+
+&cirque_lh_listener {
+    input-processors = <&zip_xy_scaler 5 2>, <&zip_temp_layer LAYER_Mouse 250>;
+    layer_9 {
+        layers = <LAYER_MouseWarp>;
+        input-processors = <&zip_xy_scaler 11 12>, <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>, <&zip_xy_to_scroll_mapper>, <&zip_click_to_right_click_mapper>, <&zip_temp_layer LAYER_Mouse 250>, <&zip_scroll_scaler 1 8>;
+    };
+};
