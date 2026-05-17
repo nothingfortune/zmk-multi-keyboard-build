@@ -223,7 +223,7 @@ Current artifact outputs:
 - `glove80-firmware` -> `glove80.uf2`
 - `slicemk-firmware` -> `zmk.uf2`
 
-Artifacts are retained for 90 days.
+Artifact retention follows the repository's artifact retention cap.
 
 ---
 

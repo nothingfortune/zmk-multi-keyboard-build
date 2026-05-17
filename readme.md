@@ -142,7 +142,7 @@ Each board's `positions.dtsi` maps these names to its physical key numbers. See 
 
 ### Automatic (recommended)
 
-Push or merge to `main`. GitHub Actions validates the config, then builds all three keyboards in parallel. Firmware files are uploaded as artifacts on the [Actions](../../actions) page and kept for 90 days.
+Push or merge to `main`. GitHub Actions validates the config, then builds all three keyboards in parallel. Firmware files are uploaded as artifacts on the [Actions](../../actions) page; retention follows the repository's artifact retention setting (currently 7 days).
 
 ### Manual — Go60 or Glove80 (Nix)
 
