@@ -161,7 +161,7 @@ Uploaded file:
 
 Retention:
 
-- 90 days
+- 7 days
 
 ### `build-glove80`
 
@@ -191,7 +191,7 @@ Uploaded file:
 
 Retention:
 
-- 90 days
+- 7 days
 
 ### `build-slicemk`
 
@@ -220,7 +220,7 @@ Artifact produced:
 
 Retention:
 
-- 90 days
+- 7 days
 
 ---
 
