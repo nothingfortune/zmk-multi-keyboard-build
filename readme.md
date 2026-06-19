@@ -14,7 +14,10 @@ If you only want the normal edit workflow, go straight to [getting-started.md](g
 - [getting-started.md](getting-started.md): first normal change, sync, validate, and firmware download
 - [docs/add-new-keyboard-layout.md](docs/add-new-keyboard-layout.md): add a completely new board
 - [docs/ci-cd-pipeline.md](docs/ci-cd-pipeline.md): GitHub Actions and artifact flow
-- [docs/repo-assessment.md](docs/repo-assessment.md): architecture and documentation review
+- [docs/repo-hardening-plan.md](docs/repo-hardening-plan.md): active hardening backlog and status
+- [docs/doc-verification-checklist.md](docs/doc-verification-checklist.md): keep docs in sync with implementation
+- [docs/review-guidance.md](docs/review-guidance.md): what to check when reviewing high-risk changes
+- [docs/completedplans/repo-assessment.md](docs/completedplans/repo-assessment.md): architecture and documentation review (historical)
 
 ---
 
@@ -75,9 +78,9 @@ zmk-multi-keyboard-build/
 │       └── layers/                 # 77-key grid; extra positions are board-specific
 │
 ├── boards/translations/            # Positional index maps used by keymapsync.sh
-│   ├── go60_to_glove80.map         # go60 binding index → glove80 binding index (60 pairs)
-│   ├── go60_to_slicemk.map         # go60 binding index → slicemk binding index (60 pairs)
-│   └── glove80_to_go60.map         # glove80 binding index → go60 binding index (reverse)
+│   ├── go60_to_glove80.map         # go60 binding index → glove80 binding index (60 pairs) — consumed by keymapsync.sh
+│   ├── go60_to_slicemk.map         # go60 binding index → slicemk binding index (60 pairs) — consumed by keymapsync.sh
+│   └── glove80_to_go60.map         # reverse lookup reference (60 pairs); NOT consumed by sync
 │
 ├── config/                         # SliceMK west entry point
 │   ├── west.yml                    # Declares slicemk/zmk as ZMK dependency
@@ -91,19 +94,32 @@ zmk-multi-keyboard-build/
 ├── scripts/
 │   ├── keymapsync.sh               # Sync go60 layers → glove80 + slicemk (go60 is source of truth)
 │   ├── diff_layers.sh              # Compare layer bindings across boards
-│   └── validation.sh               # Structural validation (run by CI before builds)
+│   ├── validation.sh               # Structural validation (run by CI before builds)
+│   ├── check.sh                    # One command: sync + drift + validate + tests (mirrors CI)
+│   └── install-hooks.sh            # Opt in to the repo git hooks (.githooks/)
+│
+├── tests/
+│   └── keymapsync_test.sh          # Fixture-based regression tests for the sync engine
+│
+├── .githooks/                      # Optional hooks (commit-msg, pre-commit drift guard)
 │
 ├── docs/
 │   ├── add-new-keyboard-layout.md  # Deep guide for integrating a new board
 │   ├── ci-cd-pipeline.md           # Detailed GitHub Actions pipeline guide
 │   ├── keyPositionMapping.md       # Cross-board position name ↔ physical index reference
-│   ├── repo-assessment.md          # Architecture and documentation assessment
-│   ├── zmk-sync-architectureplanning.md
-│   ├── bt-profile-os-mode-planning.md
-│   └── rca-slicemk-magic-validation-failure-2026-04-11.md
+│   ├── repo-hardening-plan.md      # Active hardening backlog (correctness, reproducibility, tooling)
+│   ├── doc-verification-checklist.md  # Checklist to keep docs in sync with implementation
+│   ├── review-guidance.md          # Review checklist for high-risk / sync-critical changes
+│   ├── bt-profile-os-mode-planning.md # On-hold design note (BT-profile OS mode switching)
+│   ├── rca-slicemk-magic-validation-failure-2026-04-11.md
+│   └── completedplans/             # Finished design/assessment notes (historical)
+│       ├── initialConceptDoc.md
+│       ├── zmk-sync-architectureplanning.md
+│       └── repo-assessment.md
 │
 ├── build.yaml                      # SliceMK board/shield matrix for west build
-└── .github/workflows/build.yml     # CI: validates, then builds all 3 boards in parallel
+├── .github/CODEOWNERS              # Review ownership for high-risk / sync-critical files
+└── .github/workflows/build.yml     # CI: syncs, drift-gates, validates + tests, then builds 3 boards
 ```
 
 ### Layers (21 total)
@@ -186,7 +202,7 @@ This matches the CI build flow in `.github/workflows/build.yml`.
 |---|---|---|
 | Go60 | `go60-firmware` | `go60.uf2` — flash left half, then right half |
 | Glove80 | `glove80-firmware` | `glove80.uf2` — flash left half, then right half |
-| SliceMK | `firmware` | `.uf2` file — flash the left-central half |
+| SliceMK | `slicemk-firmware` | `zmk.uf2` — flash the left-central half |
 
 Download from the Actions run page → click the job → scroll to **Artifacts**.
 
@@ -267,10 +283,12 @@ Edit `boards/go60/board_meta.dtsi`. Glove80 and SliceMK stubs are in their respe
 ### Validating the repo structure
 
 ```sh
+./scripts/check.sh        # sync + drift + validation + fixture tests (mirrors CI)
+# or just the structural validation on its own:
 ./scripts/validation.sh
 ```
 
-It covers repo structure and DTS sanity checks including required files, layer counts, binding counts per board, combo wrapper placement, include ordering, duplicate DTS labels, cross-board layer/reference consistency, behavior schema constraints, and undefined `&label` detection. It also runs automatically in CI as the first job before any firmware build.
+`validation.sh` covers repo structure and DTS sanity checks including required files, layer counts, binding counts per board, combo wrapper placement, include ordering, duplicate DTS labels, cross-board layer/reference consistency, behavior schema constraints, undefined `&label` detection, and translation-map consistency (no duplicate/out-of-range indices, entries agree with `positions.dtsi` logical names, full shared-position coverage, reverse-map inverse check). It also runs automatically in CI as the first job before any firmware build, alongside the `tests/keymapsync_test.sh` sync-engine regression tests.
 
 ### SliceMK and Magic layer behavior
 
@@ -328,12 +346,3 @@ Update `build.yaml` and `config/slicemk_ergodox_leftcentral.conf` if your board 
 **Macros** are ordered sequences of actions (key presses, behaviors) that execute when triggered.
 
 **Home Row Mods (HRM)** use hold-tap behaviors on home-row keys so each key sends a letter on tap and a modifier on hold. This repo uses bilateral positional HRM — the hold only fires when the opposite hand or a thumb key is pressed simultaneously.
-
-
-&cirque_lh_listener {
-    input-processors = <&zip_xy_scaler 5 2>, <&zip_temp_layer LAYER_Mouse 250>;
-    layer_9 {
-        layers = <LAYER_MouseWarp>;
-        input-processors = <&zip_xy_scaler 11 12>, <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>, <&zip_xy_to_scroll_mapper>, <&zip_click_to_right_click_mapper>, <&zip_temp_layer LAYER_Mouse 250>, <&zip_scroll_scaler 1 8>;
-    };
-};

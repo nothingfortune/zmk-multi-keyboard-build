@@ -9,7 +9,10 @@ if (( BASH_VERSINFO[0] < 4 )); then
 fi
 set -euo pipefail
 
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# REPO_ROOT defaults to the repository containing this script. It can be
+# overridden via KEYMAPSYNC_REPO_ROOT so the fixture tests in tests/ can run the
+# real sync logic against a small alternate tree. Normal use is unaffected.
+REPO_ROOT="${KEYMAPSYNC_REPO_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 
 GO60_DIR="$REPO_ROOT/boards/go60/layers"
 GLOVE80_DIR="$REPO_ROOT/boards/glove80/layers"
@@ -63,6 +66,9 @@ parse_bindings() {
     fi
   done < <(tr -s '[:space:]' '\n' <<< "$raw")
   [[ -n "$current" ]] && _b+=("$current")
+  # Always succeed: an empty/malformed block yields an empty array and must let
+  # sync_layer skip this file cleanly, not abort the whole run under `set -e`.
+  return 0
 }
 
 # Parse the slot width (binding text + trailing H-space to next & on same line)

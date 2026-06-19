@@ -22,14 +22,39 @@ The goal of this plan is to strengthen those guarantees without redesigning the 
 
 ---
 
+## Progress (2026-06-19)
+
+Completed this session (locally verified):
+
+- **Live drift fix** — `8586bb5` changed Go60 layers without re-syncing; Glove80/SliceMK
+  base/cursor/keypad/mouse were stale and have been regenerated.
+- **P0.4** documentation drift, **P0.1** CI drift gate, **P0.3** translation-map
+  validation, **P0.2** keymapsync fixture tests (found + fixed an empty-block abort
+  bug), **P3.1** `scripts/check.sh`, **P3.3** optional pre-commit hook, **P3.4**
+  CODEOWNERS + review guidance.
+
+Not started (need decisions or upstream facts):
+
+- **P1.1 / P1.2** pin upstream ZMK revisions + build infra — need chosen commit
+  SHAs / container digest (the natural decision wall).
+- **P1.3** build manifest, **P2.1** board registry, **P2.2 / P2.3** validation
+  refactor + language decision, **P3.2** mark synchronized files, **P4.x** delivery.
+
+---
+
 ## Priority 0 — Correctness and Drift Prevention
 
 ### P0.1 — Fail CI when committed synchronized files are stale
 
-- [ ] Run `bash scripts/keymapsync.sh` in CI.
-- [ ] Immediately run `git diff --exit-code` after synchronization.
-- [ ] Print a clear failure message explaining that derived board files must be synchronized and committed.
-- [ ] Document the same check in `getting-started.md`.
+- [x] Run `bash scripts/keymapsync.sh` in CI. (Already run in the `sync-keymaps` job.)
+- [x] Immediately run `git diff --exit-code` after synchronization. (Added the "Fail if committed derived files are stale" step in `sync-keymaps`, using `git diff --quiet`.)
+- [x] Print a clear failure message explaining that derived board files must be synchronized and committed. (Step emits a `::error::` annotation plus the `git diff --stat`/diff and the fix command.)
+- [x] Document the same check in `getting-started.md`. (Added a "Commit the synced files" callout under step 5.)
+
+> **Note:** This gate caught a live drift instance on `main`: commit `8586bb5`
+> changed Go60 layers without re-syncing, leaving Glove80/SliceMK
+> base/cursor/keypad/mouse stale. The corrected synced files are included in this
+> branch.
 
 **Why:** The current workflow builds from a corrected synchronized workspace, but a contributor can still leave stale derived files committed to the repository.
 
@@ -44,21 +69,37 @@ The goal of this plan is to strengthen those guarantees without redesigning the 
 
 Create fixture-based tests covering:
 
-- [ ] Zero-parameter bindings such as `&gresc`.
-- [ ] Single-parameter bindings such as `&kp A`.
-- [ ] Multi-parameter bindings such as HRM behaviors.
-- [ ] Inline comments and block comments.
-- [ ] Preservation of target-board-only positions.
-- [ ] SliceMK `&magic` to `&none` rewriting.
-- [ ] Preservation of surrounding DTS structure.
-- [ ] Preservation of readable alignment and formatting.
-- [ ] Idempotency: a second sync produces no additional changes.
-- [ ] Clear failure behavior for malformed bindings blocks.
+- [x] Zero-parameter bindings such as `&gresc`.
+- [x] Single-parameter bindings such as `&kp A`.
+- [x] Multi-parameter bindings such as HRM behaviors.
+- [x] Inline comments and block comments. (Inline tested with DTS-idiomatic `/* */`; see finding on `//` below.)
+- [x] Preservation of target-board-only positions.
+- [x] SliceMK `&magic` to `&none` rewriting.
+- [x] Preservation of surrounding DTS structure.
+- [x] Preservation of readable alignment and formatting.
+- [x] Idempotency: a second sync produces no additional changes.
+- [x] Clear failure behavior for malformed bindings blocks. (Empty/unparseable block now skips cleanly — see bug fix below.)
+
+Implemented as `tests/keymapsync_test.sh` (18 assertions, run against the real
+script via the new `KEYMAPSYNC_REPO_ROOT` override) and wired into the CI
+`validate` job before any firmware build.
+
+**Bugs the fixtures surfaced (one fixed, one flagged):**
+
+- **Fixed:** `parse_bindings` returned non-zero on an empty/malformed bindings
+  block, which under `set -e` aborted the *entire* sync (later boards never
+  synced) instead of skipping that one layer. Added `return 0`. Verified
+  behavior-neutral on the real repo (re-sync is a no-op; validation still 319/0).
+- **Flagged (not fixed):** `parse_bindings` strips `/* */` but not `//`, while
+  `write_bindings` skips `//`. A `//` inline comment in a bindings block would be
+  absorbed into the binding and duplicated. No real layer uses `//` (repo is
+  `/* */`-idiomatic), so this is latent. Fix would be to strip `//` in
+  `parse_bindings` for parser symmetry — left for review.
 
 **Acceptance criteria:**
 
-- Tests run in CI before firmware builds.
-- A parser regression can be reproduced locally from a small fixture rather than a full keyboard configuration.
+- [x] Tests run in CI before firmware builds.
+- [x] A parser regression can be reproduced locally from a small fixture rather than a full keyboard configuration.
 
 ---
 
@@ -66,13 +107,15 @@ Create fixture-based tests covering:
 
 Add validation for:
 
-- [ ] Duplicate source indices.
-- [ ] Duplicate destination indices.
-- [ ] Source indices outside the Go60 binding range.
-- [ ] Destination indices outside the target board binding range.
-- [ ] Missing mappings for expected shared logical positions.
-- [ ] Translation-map entries that disagree with `positions.dtsi` logical names.
-- [ ] Reverse-map consistency where reverse maps exist.
+- [x] Duplicate source indices.
+- [x] Duplicate destination indices.
+- [x] Source indices outside the Go60 binding range.
+- [x] Destination indices outside the target board binding range.
+- [x] Missing mappings for expected shared logical positions. (Completeness check: go60 side must cover exactly indices 0..59.)
+- [x] Translation-map entries that disagree with `positions.dtsi` logical names. (Resolves each index to its `POS_*` name on both boards and requires equality.)
+- [x] Reverse-map consistency where reverse maps exist. (`glove80_to_go60.map` must be the exact inverse of `go60_to_glove80.map`.)
+
+Implemented as `validation.sh` **section 25**; positive (real maps pass) and negative (broken-map fixture flags every failure mode) paths both verified.
 
 **Acceptance criteria:**
 
@@ -83,12 +126,14 @@ Add validation for:
 
 ### P0.4 — Correct current documentation drift
 
-- [ ] Reconcile firmware artifact retention values between `docs/ci-cd-pipeline.md` and `.github/workflows/build.yml`.
-- [ ] Recheck documented layer counts.
-- [ ] Recheck board key counts.
-- [ ] Recheck artifact names and output paths.
-- [ ] Recheck filenames and translation-map extensions.
-- [ ] Add a lightweight documentation verification checklist for future architecture changes.
+- [x] Reconcile firmware artifact retention values between `docs/ci-cd-pipeline.md` and `.github/workflows/build.yml`. (Already 7d firmware / 1d synced-workspace in both; verified consistent.)
+- [x] Recheck documented layer counts. (21 total, SliceMK 20 active — consistent across `readme.md`, `getting-started.md`.)
+- [x] Recheck board key counts. (60 / 80 / 77 — consistent with `positions.dtsi` and `validation.sh`.)
+- [x] Recheck artifact names and output paths. (Fixed SliceMK `firmware`/`.uf2` → `slicemk-firmware`/`zmk.uf2` in `readme.md` and `getting-started.md`.)
+- [x] Recheck filenames and translation-map extensions. (Live files are `.map`; the only `.txt` references were in the historical sync-architecture note, now in `docs/completedplans/`. Reverse map `glove80_to_go60.map` clarified as not consumed by sync.)
+- [x] Add a lightweight documentation verification checklist for future architecture changes. (Added `docs/doc-verification-checklist.md`.)
+- [x] Update and complete top-level repo README.md. (Fixed SliceMK artifact row, removed a stray dangling `&cirque_lh_listener` DTS block, refreshed doc map + repo-layout tree, clarified reverse-map comment.)
+- [x] Cleanup docs folder to match current status. Completed planning/assessment notes moved to `docs/completedplans/`; on-hold and living docs kept in `docs/`.
 
 **Acceptance criteria:**
 
@@ -214,15 +259,17 @@ bash scripts/check.sh
 
 It should:
 
-- [ ] Run keymap synchronization.
-- [ ] Report whether synchronization changed tracked files.
-- [ ] Run structural validation.
-- [ ] Optionally run fixture tests.
-- [ ] Provide a concise pass/fail summary.
+- [x] Run keymap synchronization.
+- [x] Report whether synchronization changed tracked files. (Drift check over `boards/glove80/layers` + `boards/slicemk/layers`.)
+- [x] Run structural validation.
+- [x] Optionally run fixture tests. (Run by default; `--no-tests` to skip.)
+- [x] Provide a concise pass/fail summary.
+
+Implemented as `scripts/check.sh`; documented in `getting-started.md` and `START-HERE.md`.
 
 **Acceptance criteria:**
 
-- Contributors have one documented command that matches the important CI checks.
+- [x] Contributors have one documented command that matches the important CI checks.
 
 ---
 
@@ -241,26 +288,28 @@ It should:
 
 ### P3.3 — Add optional pre-commit protection
 
-- [ ] Add a pre-commit hook or documented hook installer.
-- [ ] Run synchronization and drift detection before commit.
-- [ ] Keep the hook optional; CI remains authoritative.
+- [x] Add a pre-commit hook or documented hook installer. (`.githooks/pre-commit` + `scripts/install-hooks.sh`.)
+- [x] Run synchronization and drift detection before commit. (Hook re-syncs and blocks on derived drift; fast-paths commits that don't touch sync inputs.)
+- [x] Keep the hook optional; CI remains authoritative. (Opt-in via `core.hooksPath`; `--no-verify` bypasses; CI P0.1 gate is the real enforcement.)
+
+Verified in an isolated repo: fast-path exit 0 with no relevant staged files; regenerate + block (exit 1) when a go60 edit would leave derived files stale.
 
 **Acceptance criteria:**
 
-- Contributors can catch stale synchronized files before pushing.
-- Skipping local hooks cannot bypass CI enforcement.
+- [x] Contributors can catch stale synchronized files before pushing.
+- [x] Skipping local hooks cannot bypass CI enforcement.
 
 ---
 
 ### P3.4 — Add ownership and review guidance
 
-- [ ] Add `CODEOWNERS` or equivalent review guidance for high-risk files.
-- [ ] Require deliberate review for translation maps, sync logic, validation, and CI changes.
-- [ ] Document expected review checks for adding a board or changing logical position mappings.
+- [x] Add `CODEOWNERS` or equivalent review guidance for high-risk files. (`.github/CODEOWNERS`.)
+- [x] Require deliberate review for translation maps, sync logic, validation, and CI changes. (CODEOWNERS patterns cover `scripts/`, `boards/translations/`, `tests/`, `boards/go60/`, `shared/layers.dtsi`, `.github/`, `.githooks/`, `build/`, `config/`.)
+- [x] Document expected review checks for adding a board or changing logical position mappings. (`docs/review-guidance.md`.)
 
 **Acceptance criteria:**
 
-- High-impact architectural files are easy to identify during review.
+- [x] High-impact architectural files are easy to identify during review.
 
 ---
 

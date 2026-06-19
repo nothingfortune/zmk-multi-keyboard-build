@@ -1,0 +1,30 @@
+# CODEOWNERS — review ownership for high-impact architectural files.
+#
+# The paths below gate the multi-board sync model. A mistake here can silently
+# corrupt every derived board, so changes to them require deliberate review.
+# See docs/review-guidance.md for the specific checks to run during review.
+#
+# (GitHub honors the LAST matching pattern, so the high-risk patterns below
+#  intentionally come after the catch-all default.)
+
+# Default owner for everything in the repo.
+*                          @nothingfortune
+
+# Sync engine and its inputs — the heart of the canonical-source model.
+/scripts/keymapsync.sh     @nothingfortune
+/scripts/validation.sh     @nothingfortune
+/scripts/check.sh          @nothingfortune
+/scripts/install-hooks.sh  @nothingfortune
+/boards/translations/      @nothingfortune
+/tests/                    @nothingfortune
+
+# Canonical source of truth for shared layer content and layer indices.
+/boards/go60/              @nothingfortune
+/shared/layers.dtsi        @nothingfortune
+
+# CI, build, and hook wiring.
+/.github/                  @nothingfortune
+/.githooks/                @nothingfortune
+/build/                    @nothingfortune
+/config/                   @nothingfortune
+/build.yaml                @nothingfortune

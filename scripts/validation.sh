@@ -1106,6 +1106,87 @@ else
 fi
 
 # ══════════════════════════════════════════════════════════════
+section "25. Translation map validation"
+# ══════════════════════════════════════════════════════════════
+#
+# Maps in boards/translations/ are "src_idx dst_idx" pairs and form the sync
+# boundary: keymapsync.sh copies go60[src] into target[dst]. A bad map silently
+# corrupts synced layers, so prove each map is internally consistent and agrees
+# with the logical position names in positions.dtsi.
+
+TRANS_DIR="$REPO_ROOT/boards/translations"
+GO60_POS="$REPO_ROOT/boards/go60/positions.dtsi"
+GLOVE80_POS="$REPO_ROOT/boards/glove80/positions.dtsi"
+SLICEMK_POS="$REPO_ROOT/boards/slicemk/positions.dtsi"
+
+# Structural + logical-name validation for one map file.
+#   $1 map  $2 src positions.dtsi  $3 dst positions.dtsi
+#   $4 src_max  $5 dst_max  $6 go60-side column (1=src, 2=dst)  $7 label
+validate_one_map() {
+  local map="$1" src_pos="$2" dst_pos="$3" src_max="$4" dst_max="$5" go60col="$6" label="$7"
+
+  if [[ ! -f "$map" ]]; then
+    fail "$label — map file missing"
+    return
+  fi
+
+  local problems
+  problems=$(awk -v smax="$src_max" -v dmax="$dst_max" \
+                 -v srcf="$src_pos" -v dstf="$dst_pos" -v mapf="$map" '
+    FILENAME==srcf && $1=="#define" && $2 ~ /^POS_/ { sname[$3]=$2 }
+    FILENAME==dstf && $1=="#define" && $2 ~ /^POS_/ { dname[$3]=$2 }
+    FILENAME==mapf && $1 ~ /^[0-9]+$/ {
+      n++; s=$1; d=$2
+      if (d !~ /^[0-9]+$/)    { print "malformed entry (no destination index): " $0; next }
+      if (seen_s[s]++)        { print "duplicate source index " s }
+      if (seen_d[d]++)        { print "duplicate destination index " d }
+      if (s+0 > smax)         { print "source index " s " out of range 0.." smax }
+      if (d+0 > dmax)         { print "destination index " d " out of range 0.." dmax }
+      if (!(s in sname))      { print "source index " s " has no logical position name" }
+      else if (!(d in dname)) { print "destination index " d " has no logical position name" }
+      else if (sname[s] != dname[d]) { print "logical mismatch: " s "(" sname[s] ") -> " d "(" dname[d] ")" }
+    }
+    END { if (n+0 != 60) print "expected 60 entries, found " n+0 }
+  ' "$src_pos" "$dst_pos" "$map")
+
+  if [[ -z "$problems" ]]; then
+    pass "$label — 60 entries; no duplicate/range/name issues"
+  else
+    fail "$label — translation map problems:"
+    while IFS= read -r line; do printf "      %s\n" "$line"; done <<< "$problems"
+  fi
+
+  # Completeness: the go60 side must cover exactly the 60 shared positions 0..59.
+  local covered expected
+  covered=$(awk -v col="$go60col" '$1 ~ /^[0-9]+$/ {print $col}' "$map" | sort -n | uniq | tr '\n' ' ')
+  expected=$(seq 0 59 | tr '\n' ' ')
+  if [[ "$covered" == "$expected" ]]; then
+    pass "$label — covers all 60 shared go60 logical positions"
+  else
+    fail "$label — does not cover exactly go60 positions 0..59"
+  fi
+}
+
+validate_one_map "$TRANS_DIR/go60_to_glove80.map" "$GO60_POS" "$GLOVE80_POS" 59 79 1 "go60_to_glove80.map"
+validate_one_map "$TRANS_DIR/go60_to_slicemk.map" "$GO60_POS" "$SLICEMK_POS" 59 76 1 "go60_to_slicemk.map"
+
+# Reverse map: not consumed by sync, but kept as a reference — keep it honest.
+REV_MAP="$TRANS_DIR/glove80_to_go60.map"
+FWD_MAP="$TRANS_DIR/go60_to_glove80.map"
+if [[ -f "$REV_MAP" ]]; then
+  validate_one_map "$REV_MAP" "$GLOVE80_POS" "$GO60_POS" 79 59 2 "glove80_to_go60.map (reverse)"
+  if [[ -f "$FWD_MAP" ]]; then
+    fwd_inv=$(awk '$1 ~ /^[0-9]+$/ {print $2, $1}' "$FWD_MAP" | sort -n)
+    rev_pairs=$(awk '$1 ~ /^[0-9]+$/ {print $1, $2}' "$REV_MAP" | sort -n)
+    if [[ "$fwd_inv" == "$rev_pairs" ]]; then
+      pass "glove80_to_go60.map is a consistent inverse of go60_to_glove80.map"
+    else
+      fail "glove80_to_go60.map is NOT the exact inverse of go60_to_glove80.map"
+    fi
+  fi
+fi
+
+# ══════════════════════════════════════════════════════════════
 printf "\n${BOLD}══════════════════════════════════════════════${NC}\n"
 printf "  ${GREEN}PASS: %-4d${NC}  ${RED}FAIL: %-4d${NC}  ${YELLOW}WARN: %-4d${NC}\n" \
        "$PASS" "$FAIL" "$WARN"

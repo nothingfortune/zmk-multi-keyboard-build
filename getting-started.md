@@ -186,6 +186,11 @@ bash scripts/validation.sh
 
 Runs the repo structure and DTS sanity checks — binding counts, include ordering, undefined labels, and more. If something is wrong this will tell you exactly what before it hits the compiler.
 
+> **One command for everything:** `bash scripts/check.sh` runs sync, drift
+> detection, structural validation, and the keymapsync fixture tests in one shot
+> and prints a pass/fail summary. It mirrors the gates CI enforces, so a clean
+> run here predicts a clean CI run. Add `--no-tests` to skip the fixture tests.
+
 ### 5. Commit and push
 
 ```sh
@@ -195,6 +200,18 @@ git push
 ```
 
 GitHub Actions picks it up, runs sync, validates the synced tree, and builds all three boards. Firmware artifacts usually show up on the [Actions](../../actions) page within a few minutes.
+
+> **Commit the synced files.** Because Go60 is the source of truth, CI re-runs
+> `scripts/keymapsync.sh` and then fails the **Sync keymaps** job if that produces
+> any change — i.e. if you edited a shared Go60 binding but did not commit the
+> regenerated Glove80/SliceMK layer files. If CI reports *"Stale derived board
+> files"*, run `bash scripts/keymapsync.sh` locally, commit the result, and push
+> again. Always commit the three boards together.
+
+> **Optional: catch drift before you commit.** Run `bash scripts/install-hooks.sh`
+> once to enable the repo's git hooks. The `pre-commit` hook re-syncs and blocks
+> a commit that would leave derived files stale. It's optional and can be bypassed
+> with `git commit --no-verify`; CI is always the authoritative gate.
 
 ---
 
@@ -210,7 +227,7 @@ GitHub Actions picks it up, runs sync, validates the synced tree, and builds all
 |---|---|---|
 | Go60 | `go60-firmware` | `go60.uf2` |
 | Glove80 | `glove80-firmware` | `glove80.uf2` |
-| SliceMK | `firmware` | `.uf2` |
+| SliceMK | `slicemk-firmware` | `zmk.uf2` |
 
 ### Flashing
 
@@ -424,6 +441,6 @@ bash scripts/validation.sh   # confirm clean
 
 ## Next steps
 
-- `docs/zmk-sync-architectureplanning.md` — deep dive into how the sync system works
+- `docs/completedplans/zmk-sync-architectureplanning.md` — deep dive into how the sync system works
 - `docs/keyPositionMapping.md` — full cross-board position number reference table
 - [ZMK documentation](https://zmk.dev/docs) — ZMK behaviors, combos, macros reference
