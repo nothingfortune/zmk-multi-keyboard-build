@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# Optional pre-commit hook: catch stale derived board files before they are
+# committed. Go60 is the source of truth; this regenerates Glove80/SliceMK from
+# it and blocks the commit if the committed derived files were out of sync.
+#
+# Enable (opt-in):   bash scripts/install-hooks.sh
+#                    # or: git config core.hooksPath .githooks
+# Bypass once:        git commit --no-verify
+#
+# CI remains authoritative — skipping this hook cannot bypass the CI drift gate.
+set -uo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "$REPO_ROOT"
+
+# Only do work when this commit touches something that can affect sync output,
+# so ordinary commits stay fast.
+if ! git diff --cached --name-only | grep -qE \
+    '^boards/go60/layers/|^boards/translations/|^scripts/keymapsync\.sh$|^boards/(glove80|slicemk)/layers/'; then
+  exit 0
+fi
+
+if ! bash scripts/keymapsync.sh >/dev/null 2>&1; then
+  echo "pre-commit: keymapsync.sh failed — fix the error and try again." >&2
+  exit 1
+fi
+
+if ! git diff --quiet -- boards/glove80/layers boards/slicemk/layers; then
+  echo "pre-commit: derived board files were out of sync and have been regenerated."
+  echo "Review and stage them, then commit again:"
+  git --no-pager diff --stat -- boards/glove80/layers boards/slicemk/layers | sed 's/^/  /'
+  echo
+  echo "    git add boards/glove80/layers boards/slicemk/layers"
+  echo
+  echo "(Bypass this optional hook with: git commit --no-verify — CI still enforces sync.)"
+  exit 1
+fi
+
+exit 0

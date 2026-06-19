@@ -40,14 +40,13 @@ If you just want the short version, do this:
 # 1. Edit the shared layer in Go60
 code boards/go60/layers/base.dtsi
 
-# 2. Sync it to the other boards
-bash scripts/keymapsync.sh
-
-# 3. Validate the synced tree
-bash scripts/validation.sh
+# 2. Run sync + drift check + validation + tests in one command
+bash scripts/check.sh
 ```
 
-If validation passes, commit the synchronized changes together.
+`scripts/check.sh` mirrors the CI gates. If it passes, commit the synchronized
+changes together. (You can still run the individual steps —
+`bash scripts/keymapsync.sh` then `bash scripts/validation.sh` — if you prefer.)
 
 ## What each doc is for
 
@@ -55,7 +54,7 @@ If validation passes, commit the synchronized changes together.
 - [readme.md](readme.md): repo map, board matrix, build reference, and file layout
 - [docs/add-new-keyboard-layout.md](docs/add-new-keyboard-layout.md): adding a completely new board and maintaining board-only keys
 - [docs/ci-cd-pipeline.md](docs/ci-cd-pipeline.md): GitHub Actions job flow, artifacts, caches, and build gating
-- [docs/repo-assessment.md](docs/repo-assessment.md): architecture and documentation review, not onboarding
+- [docs/completedplans/repo-assessment.md](docs/completedplans/repo-assessment.md): architecture and documentation review, not onboarding
 
 ## What is canonical
 

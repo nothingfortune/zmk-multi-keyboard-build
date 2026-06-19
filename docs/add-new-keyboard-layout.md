@@ -233,7 +233,7 @@ This is the path for boards that do not build through the existing Nix derivatio
 These are not always required for the build to succeed, but should usually be updated during a real integration:
 
 - `docs/add-new-keyboard-layout.md`
-- `docs/repo-assessment.md` if the architecture meaningfully changes
+- `docs/completedplans/repo-assessment.md` if the architecture meaningfully changes
 - any board-specific RCA or notes file if the new board needs special exclusions
 
 If the repo can build the new board but the docs still describe only the old three-board world, the integration is not complete.

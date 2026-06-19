@@ -30,6 +30,31 @@ jobs:
           include-hidden-files: true
           retention-days: 1
 
+      # Drift gate: Go60 is the source of truth. If running sync produced any
+      # change to tracked files, the committed Glove80/SliceMK derived files
+      # were stale. Fail here so derived files cannot drift silently in the repo.
+      - name: Fail if committed derived files are stale
+        run: |
+          if git diff --quiet; then
+            echo "Derived board files are in sync with Go60."
+            exit 0
+          fi
+          echo "::error title=Stale derived board files::Derived Glove80/SliceMK files are out of sync with Go60. Run scripts/keymapsync.sh and commit the result."
+          echo ""
+          echo "Go60 is the source of truth for shared layer bindings. A change landed in"
+          echo "boards/go60/layers/ (or shared content) without re-running the sync and"
+          echo "committing the regenerated Glove80/SliceMK layer files."
+          echo ""
+          echo "Fix locally and recommit:"
+          echo "    bash scripts/keymapsync.sh"
+          echo "    git add -A && git commit"
+          echo ""
+          echo "Files the sync would change (these must be committed):"
+          git --no-pager diff --stat
+          echo ""
+          git --no-pager diff
+          exit 1
+
   # Validation runs against the synced workspace and gates all builds.
   validate:
     name: Validate config
@@ -44,6 +69,9 @@ jobs:
 
       - name: Run validation script
         run: bash scripts/validation.sh
+
+      - name: Run keymapsync fixture tests
+        run: bash tests/keymapsync_test.sh
 
   # Go60 (Nix)
   build-go60:
