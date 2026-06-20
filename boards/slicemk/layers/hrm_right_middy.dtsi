@@ -1,25 +1,52 @@
-/* slicemk — LAYER 9: RightMiddy HRM - CTRL hold */
+/* slicemk — LAYER_RightMiddy (row-interleaved; shared positions synced from boards/go60/layers/hrm_right_middy.dtsi; bindings preserved) */
 
         LAYER_RightMiddy {
-			bindings = <
-			/* Row 0 */
-				&none
-			/* Row 1 */
-				&trans                                     &trans                                &trans                                  &trans                                   &trans                                 &trans                                                                        &trans                    &trans                  &trans                                  &trans                                  &trans                                  &trans                                 &trans                                   &trans
-			/* Row 2 */
-				&trans                                     &trans                                &trans                                  &trans                                   &trans                                 &trans                                                            &kp C_PLAY_PAUSE                &kp C_VOL_UP                    &HRM_right_middy_tap_v1B_TKZ Y                                       &HRM_right_middy_tap_v1B_TKZ U                             &HRM_right_middy_tap_v1B_TKZ I                             &HRM_right_middy_tap_v1B_TKZ O                           &HRM_right_middy_tap_v1B_TKZ P                              &trans
-			/* Row 3 */
-				&trans                                     &kp A                                 &kp S                                  &kp D                                     &kp F                                  &trans                                                                   &HRM_right_middy_tap_v1B_TKZ H      &HRM_right_middy_index_v1B_TKZ RSHFT J                  &none                    &HRM_right_middy_ring_v1B_TKZ LALT L  &HRM_right_middy_pinky_v1B_TKZ LGUI SEMI                &trans
-			/* Row 4 */
-				&trans                                     &trans                                &trans                                 &trans                                    &trans                                 &trans                                                            &kp C_NEXT                      &kp C_VOL_DN                    &HRM_right_middy_tap_v1B_TKZ N                                       &HRM_right_middy_tap_v1B_TKZ M                             &HRM_right_middy_tap_v1B_TKZ COMMA                      &HRM_right_middy_tap_v1B_TKZ DOT                         &trans                                    &trans
-			/* Row 5 */
-				&kp LCTRL                           &trans                                  &trans                                 &trans                                                                                                                                                          &mkp RCLK                                                                                                                                   &arrow_left LC(LEFT) LEFT                   &trans                                  &trans                                    &trans    &hyper_key
+            bindings = <
 
-			/* Thumb Cluster - Top Pair */
-				&kp DEL                             &trans                     &kp C_NEXT                      &kp DEL
-			/* Thumb Cluster - Left to Right*/
-				&trans                                    &trans                                 &trans                                                                       &trans                                    &trans                                &trans
-			/* Inside Thumb Cluster */
-				&lt LAYER_Keypad QUESTION            &lt LAYER_Symbol PERIOD
-			>;
-		};
+/* ── Special top key (slicemk-only) ────────────────────── */
+/* │                 ---                 │ */
+/* |-------------------------------------| */
+   &none
+
+/* ── Row 1 ─────────────────────────────────────────────── */
+/* │                 ---                 │ │                  1                  │ │                  2                  │ │                  3                  │ │                  4                  │ │                  5                  │ │                 ---                 │ │                 ---                 │ │                  6                  │ │                  7                  │ │                  8                  │ │                  9                  │ │                  0                  │ │                 {}                  │ */
+/* |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| */
+   &trans                                     &trans                                  &trans                                  &trans                                   &trans                                  &trans                                                                        &trans                                  &trans                                  &trans                                  &trans                                  &trans                                  &trans                                  &trans                                   &trans
+
+/* ── Row 2 ─────────────────────────────────────────────── */
+/* │                 ---                 │ │                  Q                  │ │                  W                  │ │                  E                  │ │                  R                  │ │                  T                  │ │            C_PLAY_PAUSE             │ │              C_VOL_UP               │ │                  Y                  │ │                  U                  │ │                  I                  │ │                  O                  │ │                  P                  │ │                 \|                  │ */
+/* |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| */
+   &trans                                     &trans                                  &trans                                  &trans                                   &trans                                  &trans                                                            &kp C_PLAY_PAUSE                        &kp C_VOL_UP                            &HRM_right_middy_tap_v1B_TKZ Y          &HRM_right_middy_tap_v1B_TKZ U          &HRM_right_middy_tap_v1B_TKZ I           &HRM_right_middy_tap_v1B_TKZ O          &HRM_right_middy_tap_v1B_TKZ P                       &trans
+
+/* ── Row 3 ─────────────────────────────────────────────── */
+/* │                CAPS                 │ │                  A                  │ │                  S                  │ │                  D                  │ │                  F                  │ │                  G                  │                                        │                  H                  │ │                  J                  │ │                  K                  │ │                  L                  │ │                SEMI                 │ │                QUOTE                │ */
+/* |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------|                                        |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| */
+   &trans                                     &kp A                                   &kp S                                   &kp D                                     &kp F                                   &trans                                                                         &HRM_right_middy_tap_v1B_TKZ H          &HRM_right_middy_index_v1B_TKZ RSHFT J                  &none                                  &HRM_right_middy_ring_v1B_TKZ LALT L    &HRM_right_middy_pinky_v1B_TKZ LGUI SEMI                &trans
+
+/* ── Row 4 ─────────────────────────────────────────────── */
+/* │                MAGIC                │ │                  Z                  │ │                  X                  │ │                  C                  │ │                  V                  │ │                  B                  │ │               C_NEXT                │ │              C_VOL_DN               │ │                  N                  │ │                  M                  │ │                COMMA                │ │                 DOT                 │ │                QMARK                │ │                LSHFT                │ */
+/* |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| */
+   &trans                                     &trans                                  &trans                                  &trans                                    &trans                                  &trans                                                            &kp C_NEXT                              &kp C_VOL_DN                            &HRM_right_middy_tap_v1B_TKZ N          &HRM_right_middy_tap_v1B_TKZ M          &HRM_right_middy_tap_v1B_TKZ COMMA       &HRM_right_middy_tap_v1B_TKZ DOT                    &trans                                    &trans
+
+/* ── Row 5 ─────────────────────────────────────────────── */
+/* │                LCTRL                │ │                 ---                 │ │                 ---                 │ │                 ---                 │ │                RCLK                 │                                        │                LEFT                 │ │                 ---                 │ │                 ---                 │ │                 ---                 │ │                HYPER                │ */
+/* |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------|                                        |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| |-------------------------------------| */
+   &kp LCTRL                              &trans                                  &trans                                  &trans                                                                                                                                                          &mkp RCLK                                                                      &arrow_left LC(LEFT) LEFT               &trans                                  &trans                                    &trans                                  &hyper_key
+
+/* ── Extra thumbs T4-T5 (slicemk-only) ─────────────────── */
+/* │                 DEL                 │ │                 ---                 │                                        │               C_NEXT                │ │                 DEL                 │ */
+/* |-------------------------------------| |-------------------------------------|                                        |-------------------------------------| |-------------------------------------| */
+   &kp DEL                                &trans                                                                         &kp C_NEXT                              &kp DEL
+
+/* ── Primary thumbs T1-T3 ──────────────────────────────── */
+/* │                 ---                 │ │                 ---                 │ │                 ---                 │                                        │                 ---                 │ │                 ---                 │ │                 ---                 │ */
+/* |-------------------------------------| |-------------------------------------| |-------------------------------------|                                        |-------------------------------------| |-------------------------------------| |-------------------------------------| */
+   &trans                                    &trans                                  &trans                                                                         &trans                                    &trans                                  &trans
+
+/* ── Extra thumb T6 (slicemk-only) ─────────────────────── */
+/* │           Keypad/QUESTION           │                                        │            Symbol/PERIOD            │ */
+/* |-------------------------------------|                                        |-------------------------------------| */
+   &lt LAYER_Keypad QUESTION                                                     &lt LAYER_Symbol PERIOD
+
+            >;
+        };
