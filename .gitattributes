@@ -1,0 +1,23 @@
+# Normalize all text files to LF on checkout and in the index.
+# Prevents the CRLF churn that appears when the repo is checked out on
+# Windows/WSL with core.autocrlf enabled.
+* text=auto eol=lf
+
+# Keymap / firmware sources are always LF.
+*.dtsi   text eol=lf
+*.keymap text eol=lf
+*.conf   text eol=lf
+*.overlay text eol=lf
+*.map    text eol=lf
+*.sh     text eol=lf
+*.nix    text eol=lf
+*.yml    text eol=lf
+*.yaml   text eol=lf
+*.md     text eol=lf
+
+# Binary artifacts — never touch line endings.
+*.uf2 binary
+*.bin binary
+*.png binary
+*.jpg binary
+*.ico binary
