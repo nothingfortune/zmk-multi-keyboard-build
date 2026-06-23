@@ -1,53 +1,44 @@
-# WIP — Glove80 layer "grid" reformat
+# DONE — Glove80 layer "grid" reformat
 
-**Goal:** make the glove80 `boards/glove80/layers/*.dtsi` files readable like the MoErgo
-default (`docs/glove80defaultlayout.keymap:334-341`) — a clean column-aligned grid — but with
-an **aligned label comment row** above each binding row so you can see what each key is.
+**Status:** Complete and verified. The glove80 `boards/glove80/layers/*.dtsi` files are
+a uniform, column-aligned grid with an aligned label-comment row directly above each
+binding row — labels start at the exact column of their binding.
 
-## Agreed format (from the back-and-forth)
-- **Uniform** column width (every column the same), **left-aligned** (label starts at the exact
-  same column as its binding — alignment label↔binding is "absolutely critical").
-- One **label comment row** per physical row, directly above the bindings. No `|----|` boxes.
-- Width target the user gave: **longest mapping + 10%** (base layer = 43 → W=48).
-- Bottom thumb cluster lives in the center columns (cols 6–11), positions 69–74
-  (LH T1 T2 T3 | RH T3 T2 T1) — this was the approved "3-block split" content, just rendered
-  inline in the grid's center columns now.
+## Final solution (two coordinated parts)
 
-## Current state
-- `boards/glove80/layers/base.dtsi` is the **uniform W=48 prototype** (validates 319/0/0,
-  bindings provably identical to HEAD). It is the visible WIP.
-- Generator prototype: `docs/wip-glove80-grid/gen_grid.py` (base layer only — needs generalizing
-  to loop all 21 layers; labels come from the box-comment version still in `git HEAD`).
-- **Not approved to spread** to the other 20 glove80 files yet.
+### 1. Decoupled the sync engine (root-cause fix)
+`scripts/keymapsync.sh` `write_bindings` previously padded every synced glove80 cell to
+`max(current_cell, go60_slot_width)`. go60's slot widths are large and irregular (normal
+cells 48–57, the last cell before the hand-gap 66–88, the thumb-gap cell 150–202), so the
+sync forced those widths onto glove80 — bloating lines to ~900 chars and making a uniform
+grid impossible (the original "blocker" in this file's history).
 
-## ⛔ Blocker: keymapsync.sh fights a narrow uniform grid
-`scripts/keymapsync.sh` (write_bindings) re-pads every **mapped/shared** glove80 binding to
-`max(current_slot_width, go60_slot_width)`. So the next `keymapsync.sh` widens any column that is
-narrower than go60's slot for that position, breaking the uniform grid (verified: a sync mangles
-rows 3–6 of the W=48 base.dtsi).
+Fix: `write_bindings` now preserves **each board's own column width**, growing a cell only
+when the new binding text itself doesn't fit. It never inherits go60's gap-inflated slot
+widths. This decouples glove80's (and slicemk's) column layout from go60 and is what makes
+a clean uniform grid survive a sync. Verified: sync stays a byte-identical no-op on all
+three boards, and `tests/keymapsync_test.sh` passes (idempotent).
 
-Measured go60 slot widths:
-- center-gap slots (last-LH→first-RH): up to ~202 — **fine**, they map to glove80 positions that
-  already have a wide center.
-- **normal** (non-gap) slots: **up to 88**. → a uniform grid would need **W ≥ 88** to survive a
-  sync, i.e. ~1600-char lines. Impractical.
+### 2. Regenerated all 21 glove80 layers as a uniform grid
+`scripts/glove80_grid.py` lays each layer out as an 18-column grid
+(6 LH | 6 center | 6 RH), W=48, label row above bindings. It normalizes the two old input
+styles (base's `/* Row */` + label-above, and the other 20's box-with-separator-below) into
+one clean format. It only re-lays-out the existing bindings and **refuses to run if the
+ordered `&`-token stream would change** — so it can never alter the keymap, only formatting.
 
-## Decision needed (pick one) before spreading
-- **A. Reformat go60 too** with the same grid generator so go60's slot widths are ≤ W; glove80
-  then inherits clean widths and sync is a no-op. Touches the source of truth + all boards, but
-  makes everything consistent. (Biggest, cleanest end-state.)
-- **B. Make the generator a repo script run *after* keymapsync.sh** (workflow becomes: edit go60 →
-  sync → regenerate glove80 grid). Keeps glove80 independent; adds one workflow step + a CI tweak.
-- **C. Change keymapsync.sh to stop enforcing go60 slot widths** — replace binding *text* only,
-  preserve each board's own spacing. Cleanest decoupling (also helps the slicemk reformat already
-  done). Must verify it doesn't misalign when a synced binding's length changes vs the column.
+Longest binding anywhere is 43 chars, so W=48 has headroom; max line dropped ~909 → ~831.
 
-## Verify steps to reuse when picking this back up
-- bindings unchanged vs last-good: compare ordered `&`-token list of file vs `git show HEAD:<file>`.
-- validation: `bash scripts/validation.sh` → expect 319 PASS / 0 FAIL.
-- sync stability: snapshot file, `bash scripts/keymapsync.sh`, `diff` must be **byte-identical**.
+## Maintaining the grid
+- Edit shared content in go60, run `bash scripts/keymapsync.sh`, then
+  `python3 scripts/glove80_grid.py` to re-normalize glove80 alignment. Both are idempotent.
+- `python3 scripts/glove80_grid.py --check` exits non-zero if any layer is not normalized
+  (useful as a drift guard / pre-commit / CI check).
+- glove80 layer files are row-interleaved to match the sync/translation map and hardware
+  matrix — never re-block them by hand. See memory: glove80-binding-order-scramble.
 
-## Uncommitted working-tree state at hand-off (nothing committed)
-- `boards/slicemk/layers/*.dtsi` (21) — earlier separator-below-binding swap (validated, sync-safe).
-- `boards/glove80/layers/*.dtsi` (20, non-base) — earlier separator-below-binding swap.
-- `boards/glove80/layers/base.dtsi` — the uniform W=48 grid prototype (this WIP).
+## Verification checklist (re-run if the grid or sync logic changes)
+- `python3 scripts/glove80_grid.py --check` → exit 0
+- ordered `&`-token stream of each layer matches `git show HEAD:<file>`
+- `bash scripts/validation.sh` → 319 PASS / 0 FAIL / 0 WARN
+- snapshot `boards/`, `bash scripts/keymapsync.sh`, diff → byte-identical (no-op)
+- `bash tests/keymapsync_test.sh` → 0 failed
