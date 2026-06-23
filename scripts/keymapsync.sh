@@ -247,11 +247,13 @@ for my $idx (0 .. $#spans) {
     my $old = substr($block, $s, $e - $s); $old =~ s/\s+/ /g; $old =~ s/^\s+|\s+$//g;
     my $new = $new_bindings[$idx];         $new =~ s/^\s+|\s+$//g;
     if ($slot_end > $e) {
-        # Mid-line: replace binding + trailing whitespace, padding new text to slot width.
-        # Use the larger of the current file's slot width and the go60 source min width.
+        # Mid-line: replace binding + trailing whitespace, preserving THIS board's own
+        # column width. Grow the slot only when the new binding text itself does not fit;
+        # never inherit go60's (gap-inflated) slot widths — doing so bloats the derived
+        # grids and fights each board's own uniform column layout. The go60 min-width
+        # ($min_widths[$idx]) is intentionally no longer consulted here.
         my $slot_width = $slot_end - $s;
-        my $min_w = $min_widths[$idx] // 0;
-        $slot_width = $min_w if $min_w > $slot_width;
+        $slot_width = length($new) if length($new) > $slot_width;
         my $pad = $slot_width - length($new);
         $pad = 1 if $pad < 1;
         push @reps, [$bs + $s, $bs + $slot_end, $new . (' ' x $pad)];
