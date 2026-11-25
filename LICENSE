@@ -1,21 +1,26 @@
-MIT License
+ZMK-MULTI-KEYBOARD-BUILD PROPRIETARY LICENSE
 
-Copyright (c) 2026 nothingfortune
+Copyright © 2026 nothingfortune. All rights reserved.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+zmk-multi-keyboard-build and its associated source code, object code, documentation,
+designs, assets, data, and other materials (collectively, the “Software”)
+are proprietary and confidential.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+No license or permission is granted to use, copy, modify, reproduce, publish,
+distribute, sublicense, sell, rent, lease, disclose, reverse engineer,
+decompile, disassemble, or create derivative works from the Software, in whole
+or in part, except under a separate written agreement signed by the copyright
+holder.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+Access to or possession of the Software does not transfer ownership or grant
+any intellectual-property rights. All rights not expressly granted in a signed
+written agreement are reserved.
+
+Third-party software incorporated into or distributed with zmk-multi-keyboard-build remains
+subject to its respective license terms.
+
+THE SOFTWARE IS PROVIDED “AS IS,” WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE, TITLE, AND NON-INFRINGEMENT. TO THE MAXIMUM EXTENT PERMITTED BY LAW,
+THE COPYRIGHT HOLDER SHALL NOT BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER
+LIABILITY ARISING FROM OR RELATED TO THE SOFTWARE OR ITS USE.
